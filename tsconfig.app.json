@@ -21,7 +21,21 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@assets": ["assets/*"],
+      "@styles": ["styles/*"],
+      "@components": ["components/index.ts"],
+      "@config": ["config/index.ts"],
+      "@constants": ["constants/index.ts"],
+      "@hooks": ["hooks/index.ts"],
+      "@enums": ["models/enums/index.ts"],
+      "@interfaces": ["models/interfaces/index.ts"],
+      "@types": ["models/types/index.ts"],
+      "@pages": ["pages/index.ts"],
+      "@services": ["services/index.ts"],
+      "@utils": ["utils/index.ts"]
+    }
   },
   "include": ["src"]
 }
