@@ -17,7 +17,8 @@ export const requestBase = async (
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    const data = await response.json();
+    throw Object.assign(new Error(`Request failed with status ${response.status}`), { body: data });
   }
   return response;
 };

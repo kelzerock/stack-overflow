@@ -1,3 +1,4 @@
+import { ToastProvider } from '@context';
 import './styles/index.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -11,6 +12,8 @@ import { router } from 'router';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ToastProvider>
+      <RouterProvider router={router} />
+    </ToastProvider>
   </StrictMode>
 );

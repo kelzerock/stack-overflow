@@ -1,10 +1,10 @@
 import { UrlPath } from '@enums';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { User } from '@types';
-import { requestRegistration } from '@utils';
-import { useState } from 'react';
+import { isAPIErrorResponse, isValidationError, requestRegistration } from '@utils';
+import { ToastContext } from 'context/ToastContext';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ToastContainer, toast } from 'react-toastify';
 
 type RegistrationForm = User & { confirmPassword: string };
 
@@ -19,6 +19,7 @@ export const RegistrationPage = () => {
     useState<RegistrationForm>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { pushToast } = useContext(ToastContext);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -37,15 +38,29 @@ export const RegistrationPage = () => {
       event.preventDefault();
 
       const response = await requestRegistration(user);
-
+      console.log({ response });
       if (response.ok) {
         const data = await response.json();
-        toast.success(String(data.message));
+        pushToast({ type: 'success', message: String(data.message) });
         navigate(UrlPath.SIGN_IN);
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        if ('body' in error && isAPIErrorResponse(error.body)) {
+          const { body } = error;
+          pushToast({ type: 'error', message: body.message });
+          if (
+            'errors' in body &&
+            Array.isArray(body.errors) &&
+            body.errors.every(isValidationError)
+          ) {
+            body.errors.forEach((error) =>
+              error.failures.forEach((e) => pushToast({ type: 'error', message: e }))
+            );
+          }
+        } else {
+          pushToast({ type: 'error', message: error.message });
+        }
       }
     } finally {
       setIsSubmitting(false);
@@ -108,7 +123,17 @@ export const RegistrationPage = () => {
       >
         Registration
       </Button>
-      <ToastContainer />
+      <Button
+        variant="contained"
+        className=" self-center"
+        size="small"
+        type="button"
+        color="success"
+        disabled={isSubmitting}
+        onClick={() => navigate(UrlPath.SIGN_IN)}
+      >
+        Already registered? Go to the login page
+      </Button>
     </Box>
   );
 };

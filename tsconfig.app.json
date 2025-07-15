@@ -32,7 +32,8 @@
       "@types": ["models/types/index.ts"],
       "@pages": ["pages/index.ts"],
       "@services": ["services/index.ts"],
-      "@utils": ["utils/index.ts"]
+      "@utils": ["utils/index.ts"],
+      "@context": ["context/index.ts"]
     }
   },
   "include": ["src"]
