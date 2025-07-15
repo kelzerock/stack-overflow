@@ -21,7 +21,7 @@ function App() {
         disableGutters
       >
         <Header />
-        <Box sx={{ flexGrow: '1' }}>
+        <Box sx={{ flexGrow: '1', paddingInline: 2 }}>
           <Outlet />
         </Box>
         <Footer />

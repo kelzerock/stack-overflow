@@ -5,9 +5,10 @@ import { User } from '@types';
 import { isResponseUserFull, requestLogin } from '@utils';
 import { ToastContext } from 'context/ToastContext';
 import { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMjE0IiwidXNlcm5hbWUiOiJycnJyUiIsInJvbGUiOiJ1c2VyIn0sImlhdCI6MTc1MjU2NDU5MiwiZXhwIjoxNzUyNzM3MzkyfQ.jk4YvJ_AZHhZ0RdXAHzFCKxkWvft0RXZfzwUps5pym0
+import { AppDispatch } from 'store/store';
+import { setUser } from 'store/userSlice';
 
 const initialFormData: User = {
   username: '',
@@ -20,6 +21,7 @@ export const SignInPage = () => {
   const navigate = useNavigate();
   const { pushToast } = useContext(ToastContext);
   const handleError = useToastErrorHandler();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -44,8 +46,11 @@ export const SignInPage = () => {
         console.log({ data });
         if (isResponseUserFull(data)) {
           pushToast({ type: 'success', message: String(data.message) });
+          dispatch(setUser(data.data));
+          navigate(UrlPath.HOME);
+        } else {
+          pushToast({ type: 'error', message: 'Try one more time. Unexpected error!' });
         }
-        navigate(UrlPath.HOME);
       }
     } catch (error) {
       handleError(error);
