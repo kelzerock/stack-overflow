@@ -1,12 +1,13 @@
 import { Methods } from '@enums';
 import { LINK_TO_SERVER } from 'constants/global-constant';
+import { API } from 'models/enums/api';
 
 type RequestBody = Record<string, string>;
 
 export const requestBase = async (
-  path: string,
+  path: API,
   method: Methods,
-  body: RequestBody
+  body?: RequestBody
 ): Promise<Response> => {
   const response = await fetch(`${LINK_TO_SERVER}${path}`, {
     method,
