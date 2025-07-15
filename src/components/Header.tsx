@@ -13,6 +13,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink, redirect } from 'react-router';
 import { UrlPath } from '@enums';
+import { requestLogout } from '@utils';
+import { useToastErrorHandler } from '@hooks';
 
 const pages = [
   { name: 'Registration', path: UrlPath.REGISTRATION },
@@ -25,6 +27,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const handleError = useToastErrorHandler();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -38,7 +41,14 @@ export const Header = () => {
     return redirect(path);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = async (key: string) => {
+    if (key === 'Logout') {
+      try {
+        await requestLogout();
+      } catch (error) {
+        handleError(error);
+      }
+    }
     setAnchorElUser(null);
   };
 
@@ -155,7 +165,7 @@ export const Header = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}

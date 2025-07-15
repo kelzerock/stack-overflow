@@ -1,10 +1,13 @@
 import { UrlPath } from '@enums';
+import { useToastErrorHandler } from '@hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { User } from '@types';
-import { isAPIErrorResponse, isValidationError, requestRegistration } from '@utils';
+import { isResponseUserFull, requestLogin } from '@utils';
 import { ToastContext } from 'context/ToastContext';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMjE0IiwidXNlcm5hbWUiOiJycnJyUiIsInJvbGUiOiJ1c2VyIn0sImlhdCI6MTc1MjU2NDU5MiwiZXhwIjoxNzUyNzM3MzkyfQ.jk4YvJ_AZHhZ0RdXAHzFCKxkWvft0RXZfzwUps5pym0
 
 const initialFormData: User = {
   username: '',
@@ -16,6 +19,7 @@ export const SignInPage = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
   const { pushToast } = useContext(ToastContext);
+  const handleError = useToastErrorHandler();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -33,31 +37,18 @@ export const SignInPage = () => {
       setIsSubmitting(true);
       event.preventDefault();
 
-      const response = await requestRegistration(user);
-      console.log({ response });
+      const response = await requestLogin(user);
       if (response.ok) {
+        console.log({ response: response.headers.getSetCookie() });
         const data = await response.json();
-        pushToast({ type: 'success', message: String(data.message) });
-        navigate(UrlPath.SIGN_IN);
+        console.log({ data });
+        if (isResponseUserFull(data)) {
+          pushToast({ type: 'success', message: String(data.message) });
+        }
+        navigate(UrlPath.HOME);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        if ('body' in error && isAPIErrorResponse(error.body)) {
-          const { body } = error;
-          pushToast({ type: 'error', message: body.message });
-          if (
-            'errors' in body &&
-            Array.isArray(body.errors) &&
-            body.errors.every(isValidationError)
-          ) {
-            body.errors.forEach((error) =>
-              error.failures.forEach((e) => pushToast({ type: 'error', message: e }))
-            );
-          }
-        } else {
-          pushToast({ type: 'error', message: error.message });
-        }
-      }
+      handleError(error);
     } finally {
       setIsSubmitting(false);
     }

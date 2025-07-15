@@ -1,7 +1,8 @@
 import { UrlPath } from '@enums';
+import { useToastErrorHandler } from '@hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { User } from '@types';
-import { isAPIErrorResponse, isValidationError, requestRegistration } from '@utils';
+import { requestRegistration } from '@utils';
 import { ToastContext } from 'context/ToastContext';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -20,6 +21,7 @@ export const RegistrationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
   const { pushToast } = useContext(ToastContext);
+  const handleErrors = useToastErrorHandler();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -38,30 +40,14 @@ export const RegistrationPage = () => {
       event.preventDefault();
 
       const response = await requestRegistration(user);
-      console.log({ response });
+
       if (response.ok) {
         const data = await response.json();
         pushToast({ type: 'success', message: String(data.message) });
         navigate(UrlPath.SIGN_IN);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        if ('body' in error && isAPIErrorResponse(error.body)) {
-          const { body } = error;
-          pushToast({ type: 'error', message: body.message });
-          if (
-            'errors' in body &&
-            Array.isArray(body.errors) &&
-            body.errors.every(isValidationError)
-          ) {
-            body.errors.forEach((error) =>
-              error.failures.forEach((e) => pushToast({ type: 'error', message: e }))
-            );
-          }
-        } else {
-          pushToast({ type: 'error', message: error.message });
-        }
-      }
+      handleErrors(error);
     } finally {
       setIsSubmitting(false);
     }

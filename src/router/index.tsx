@@ -6,6 +6,7 @@ import { createBrowserRouter } from 'react-router';
 export const router = createBrowserRouter([
   {
     Component: App,
+    // loader: () => requestAuth(),
     children: [
       {
         errorElement: <ErrorPage />,
