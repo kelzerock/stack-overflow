@@ -13,11 +13,11 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink, redirect } from 'react-router';
 import { UrlPath } from '@enums';
-import { requestLogout } from '@utils';
 import { useAppSelector, useToastErrorHandler } from '@hooks';
 import { useDispatch } from 'react-redux';
 import { deleteUser } from 'store/userSlice';
 import { useToastContext } from 'context/ToastContext';
+import { rootRequest } from 'utils/request/rootRequest';
 
 const pages = [
   { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false },
@@ -50,7 +50,7 @@ export const Header = () => {
   const handleCloseUserMenu = async (key: string) => {
     if (key === 'Logout') {
       try {
-        await requestLogout();
+        await rootRequest.logout();
         dispatch(deleteUser());
         pushToast({ type: 'info', message: "You've logged out successfully. See you soon!" });
       } catch (error) {

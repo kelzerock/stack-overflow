@@ -1,8 +1,0 @@
-import { User } from '@types';
-import { requestBase } from './requestBase';
-import { Methods } from '@enums';
-import { API } from 'models/enums/api';
-
-export const requestRegistration = async (user: User): Promise<Response> => {
-  return await requestBase(API.register, Methods.POST, user);
-};

@@ -2,10 +2,10 @@ import { UrlPath } from '@enums';
 import { useToastErrorHandler } from '@hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { User } from '@types';
-import { requestRegistration } from '@utils';
 import { ToastContext } from 'context/ToastContext';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { rootRequest } from 'utils/request/rootRequest';
 
 type RegistrationForm = User & { confirmPassword: string };
 
@@ -39,7 +39,7 @@ export const RegistrationPage = () => {
       setIsSubmitting(true);
       event.preventDefault();
 
-      const response = await requestRegistration(user);
+      const response = await rootRequest.registration(user);
 
       if (response.ok) {
         const data = await response.json();

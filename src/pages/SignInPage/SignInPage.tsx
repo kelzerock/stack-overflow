@@ -2,13 +2,14 @@ import { UrlPath } from '@enums';
 import { useToastErrorHandler } from '@hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { User } from '@types';
-import { isResponseUserFull, requestLogin } from '@utils';
+import { isResponseUserFull } from '@utils';
 import { ToastContext } from 'context/ToastContext';
 import { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { AppDispatch } from 'store/store';
 import { setUser } from 'store/userSlice';
+import { rootRequest } from 'utils/request/rootRequest';
 
 const initialFormData: User = {
   username: '',
@@ -39,7 +40,7 @@ export const SignInPage = () => {
       setIsSubmitting(true);
       event.preventDefault();
 
-      const response = await requestLogin(user);
+      const response = await rootRequest.login(user);
       if (response.ok) {
         console.log({ response: response.headers.getSetCookie() });
         const data = await response.json();

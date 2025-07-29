@@ -1,12 +1,12 @@
 import { useToastErrorHandler } from '@hooks';
 import { Button } from '@mui/material';
-import { requestAuth } from '@utils';
+import { rootRequest } from 'utils/request/rootRequest';
 
 export const HomePage = () => {
   const handleError = useToastErrorHandler();
   const handleClick = async () => {
     try {
-      const res = await requestAuth();
+      const res = await rootRequest.authGet();
       console.log({ res });
       if (res.ok) {
         const data = await res.json();
