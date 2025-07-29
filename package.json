@@ -10,8 +10,8 @@
     "prepare": "husky",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "lint": "eslint --format friendly",
-    "lint:fix": "eslint --fix --format friendly"
+    "lint": "eslint --format stylish",
+    "lint:fix": "eslint --fix --format stylish"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

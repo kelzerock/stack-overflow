@@ -1,3 +1,6 @@
+export { isFullUserData } from './predicates/ifFullUserData';
+
+export { isResponseHasData } from './predicates/isResponseHasData';
 export { requestAuth } from './request/requestAuth';
 export { isResponse } from './predicates/isResponse';
 export { isResponseUserFull } from './predicates/isResponseUserFull';

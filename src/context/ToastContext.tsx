@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-
-type ToastMessage = { type: 'success' | 'error'; message: string };
+type ToastType = 'info' | 'success' | 'warning' | 'error' | 'default';
+type ToastMessage = { type: ToastType; message: string };
 type ToastContextType = {
   toasts: ToastMessage[];
   pushToast: (msg: ToastMessage) => void;

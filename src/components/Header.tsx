@@ -15,12 +15,15 @@ import { NavLink, redirect } from 'react-router';
 import { UrlPath } from '@enums';
 import { requestLogout } from '@utils';
 import { useAppSelector, useToastErrorHandler } from '@hooks';
+import { useDispatch } from 'react-redux';
+import { deleteUser } from 'store/userSlice';
+import { useToastContext } from 'context/ToastContext';
 
 const pages = [
-  { name: 'Registration', path: UrlPath.REGISTRATION },
-  { name: 'Log in', path: UrlPath.SIGN_IN },
-  { name: 'main', path: UrlPath.HOME },
-  { name: 'about', path: UrlPath.ABOUT },
+  { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false },
+  { name: 'Log in', path: UrlPath.SIGN_IN, viewForAuth: false },
+  { name: 'main', path: UrlPath.HOME, viewForAuth: true },
+  { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -29,6 +32,8 @@ export const Header = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const handleError = useToastErrorHandler();
   const { isAuth } = useAppSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { pushToast } = useToastContext();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -46,6 +51,8 @@ export const Header = () => {
     if (key === 'Logout') {
       try {
         await requestLogout();
+        dispatch(deleteUser());
+        pushToast({ type: 'info', message: "You've logged out successfully. See you soon!" });
       } catch (error) {
         handleError(error);
       }
@@ -102,13 +109,27 @@ export const Header = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.path)}>
-                  <Typography component={NavLink} to={page.path} sx={{ textAlign: 'center' }}>
-                    {page.name.toUpperCase()}
-                  </Typography>
-                </MenuItem>
-              ))}
+              {pages.map((page) => {
+                if (isAuth && page.viewForAuth) {
+                  return (
+                    <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.path)}>
+                      <Typography component={NavLink} to={page.path} sx={{ textAlign: 'center' }}>
+                        {page.name.toUpperCase()}
+                      </Typography>
+                    </MenuItem>
+                  );
+                } else {
+                  if (!isAuth) {
+                    return (
+                      <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.path)}>
+                        <Typography component={NavLink} to={page.path} sx={{ textAlign: 'center' }}>
+                          {page.name.toUpperCase()}
+                        </Typography>
+                      </MenuItem>
+                    );
+                  }
+                }
+              })}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -131,17 +152,34 @@ export const Header = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-            {pages.map((page) => (
-              <Typography
-                component={NavLink}
-                to={page.path}
-                key={page.name}
-                onClick={() => handleCloseNavMenu(page.path)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name.toUpperCase()}
-              </Typography>
-            ))}
+            {pages.map((page) => {
+              if (isAuth && page.viewForAuth) {
+                return (
+                  <Typography
+                    component={NavLink}
+                    to={page.path}
+                    key={page.name}
+                    onClick={() => handleCloseNavMenu(page.path)}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page.name.toUpperCase()}
+                  </Typography>
+                );
+              } else {
+                if (!isAuth)
+                  return (
+                    <Typography
+                      component={NavLink}
+                      to={page.path}
+                      key={page.name}
+                      onClick={() => handleCloseNavMenu(page.path)}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page.name.toUpperCase()}
+                    </Typography>
+                  );
+              }
+            })}
           </Box>
           {isAuth && (
             <Box sx={{ flexGrow: 0 }}>
