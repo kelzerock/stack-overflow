@@ -33,7 +33,8 @@
       "@pages": ["pages/index.ts"],
       "@services": ["services/index.ts"],
       "@utils": ["utils/index.ts"],
-      "@context": ["context/index.ts"]
+      "@context": ["context/index.ts"],
+      "@schemas": ["schemas/index.ts"]
     }
   },
   "include": ["src"]
