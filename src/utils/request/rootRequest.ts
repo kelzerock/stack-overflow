@@ -5,6 +5,7 @@ import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
 import { Languages } from 'models/enums/languages';
 import { Mark } from 'models/enums/mark';
+import { UserStatisticDto } from 'schemas/userStatisticDto';
 import z from 'zod';
 
 type RequestBody = Record<string, unknown>;
@@ -60,11 +61,17 @@ class RootRequest {
     return ResponseGetUsers.parse(result.data);
   };
 
-  public getUser = (id: number): Promise<Response> =>
+  public getUser = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.USERS}/${id}`, method: Methods.GET });
 
-  public getUserStatistic = (id: number): Promise<Response> =>
-    this.baseRequest({ path: `${API.USERS}/${id}/statistic`, method: Methods.GET });
+  public getUserStatistic = async (id: string): Promise<z.infer<typeof UserStatisticDto>> => {
+    const response = await this.baseRequest({
+      path: `${API.USERS}/${id}/statistic`,
+      method: Methods.GET,
+    });
+    const result = await response.json();
+    return UserStatisticDto.parse(result.data);
+  };
 
   public getMe = (): Promise<Response> => this.baseRequest({ path: API.ME, method: Methods.GET });
 
@@ -90,28 +97,28 @@ class RootRequest {
   public getLanguages = (): Promise<Response> =>
     this.baseRequest({ path: API.LANG, method: Methods.GET });
 
-  public getSnippet = (id: number): Promise<Response> =>
+  public getSnippet = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET });
 
   public updateSnippet = (
-    id: number,
+    id: string,
     body: { code: string; language: Languages }
   ): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET, body });
 
-  public deleteSnippet = (id: number): Promise<Response> =>
+  public deleteSnippet = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.DELETE });
 
-  public markSnippet = (id: number, body: { mark: Mark }): Promise<Response> =>
+  public markSnippet = (id: string, body: { mark: Mark }): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}/mark`, method: Methods.POST, body });
 
-  public addComment = (body: { content: string; snippetId: number }): Promise<Response> =>
+  public addComment = (body: { content: string; snippetid: string }): Promise<Response> =>
     this.baseRequest({ path: API.COMMENTS, method: Methods.POST, body });
 
-  public updateComment = (id: number, body: { content: string }): Promise<Response> =>
+  public updateComment = (id: string, body: { content: string }): Promise<Response> =>
     this.baseRequest({ path: `${API.COMMENTS}/${id}`, method: Methods.PATCH, body });
 
-  public deleteComment = (id: number): Promise<Response> =>
+  public deleteComment = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.COMMENTS}/${id}`, method: Methods.DELETE });
 
   public getQuestions = (query?: URLSearchParams): Promise<Response> =>
@@ -123,31 +130,31 @@ class RootRequest {
     attachedCode: string;
   }): Promise<Response> => this.baseRequest({ path: API.QUESTIONS, method: Methods.POST, body });
 
-  public getQuestion = (id: number): Promise<Response> =>
+  public getQuestion = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.GET });
 
   public updateQuestion = (
-    id: number,
+    id: string,
     body: { title: string; description: string; attachedCode: string }
   ): Promise<Response> =>
     this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.POST, body });
 
-  public deleteQuestion = (id: number): Promise<Response> =>
+  public deleteQuestion = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.DELETE });
 
   public getAnswers = (): Promise<Response> =>
     this.baseRequest({ path: API.ANSWERS, method: Methods.GET });
 
-  public addAnswer = (body: { content: string; questionId: number }): Promise<Response> =>
+  public addAnswer = (body: { content: string; questionid: string }): Promise<Response> =>
     this.baseRequest({ path: API.ANSWERS, method: Methods.POST, body });
 
-  public markAnswer = (id: number, state: 'correct' | 'incorrect'): Promise<Response> =>
+  public markAnswer = (id: string, state: 'correct' | 'incorrect'): Promise<Response> =>
     this.baseRequest({ path: `${API.ANSWERS}/${id}/state/${state}`, method: Methods.PUT });
 
-  public updateAnswer = (id: number, body: { content: string }): Promise<Response> =>
+  public updateAnswer = (id: string, body: { content: string }): Promise<Response> =>
     this.baseRequest({ path: `${API.ANSWERS}/${id}`, method: Methods.PATCH, body });
 
-  public deleteAnswers = (id: number): Promise<Response> =>
+  public deleteAnswers = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.ANSWERS}/${id}`, method: Methods.DELETE });
 }
 

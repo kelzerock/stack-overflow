@@ -13,17 +13,18 @@ export const UsersPage = () => {
   const { data } = usersData;
 
   useEffect(() => {
-    rootRequest
-      .getUsers()
-      .then((result) => dispatch(setUsersData(result)))
-      .catch((error) => {
-        if (error instanceof z.ZodError) {
-          console.log('Cannot parse data:', error.message);
-        } else {
-          throw Error('unexpected error, while get users');
-        }
-      });
-  }, [dispatch]);
+    if (!usersData.meta?.currentPage)
+      rootRequest
+        .getUsers()
+        .then((result) => dispatch(setUsersData(result)))
+        .catch((error) => {
+          if (error instanceof z.ZodError) {
+            console.log('Cannot parse data:', error.message);
+          } else {
+            throw Error('unexpected error, while get users');
+          }
+        });
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 items-center">

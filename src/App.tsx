@@ -32,10 +32,10 @@ function App() {
   return (
     <>
       <Container
-        component="main"
+        component="div"
         maxWidth="xl"
         sx={{
-          height: '100%',
+          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           boxShadow: 1,
@@ -46,7 +46,7 @@ function App() {
         disableGutters
       >
         <Header />
-        <Box sx={{ flexGrow: '1', paddingInline: 2 }}>
+        <Box sx={{ flexGrow: '1', paddingInline: 2 }} component="main">
           <Outlet />
         </Box>
         <Footer />

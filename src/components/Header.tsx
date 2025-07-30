@@ -11,21 +11,13 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { NavLink, redirect } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import { UrlPath } from '@enums';
 import { useAppSelector, useToastErrorHandler } from '@hooks';
 import { useDispatch } from 'react-redux';
 import { deleteUser } from 'store/userSlice';
 import { useToastContext } from 'context/ToastContext';
 import { rootRequest } from 'utils/request/rootRequest';
-
-const pages = [
-  { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false },
-  { name: 'Log in', path: UrlPath.SIGN_IN, viewForAuth: false },
-  { name: 'main', path: UrlPath.HOME, viewForAuth: true },
-  { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
-];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -34,6 +26,7 @@ export const Header = () => {
   const { isAuth } = useAppSelector((state) => state.user);
   const dispatch = useDispatch();
   const { pushToast } = useToastContext();
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -44,20 +37,36 @@ export const Header = () => {
 
   const handleCloseNavMenu = (path: UrlPath) => {
     setAnchorElNav(null);
-    return redirect(path);
+    navigate(path);
   };
 
-  const handleCloseUserMenu = async (key: string) => {
-    if (key === 'Logout') {
-      try {
-        await rootRequest.logout();
-        dispatch(deleteUser());
-        pushToast({ type: 'info', message: "You've logged out successfully. See you soon!" });
-      } catch (error) {
-        handleError(error);
-      }
+  const logoutUser = async () => {
+    try {
+      await rootRequest.logout();
+      dispatch(deleteUser());
+      pushToast({ type: 'info', message: "You've logged out successfully. See you soon!" });
+    } catch (error) {
+      handleError(error);
     }
+  };
+
+  const pages = [
+    { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false },
+    { name: 'Log in', path: UrlPath.SIGN_IN, viewForAuth: false },
+    { name: 'main', path: UrlPath.HOME, viewForAuth: true },
+    { name: 'users', path: UrlPath.USERS, viewForAuth: true },
+    { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
+  ];
+
+  const settings = [
+    { title: 'Account', path: UrlPath.ACCOUNT, handleClick: null },
+    { title: 'Logout', path: null, handleClick: logoutUser },
+  ];
+
+  const handleCloseUserMenu = async (setting: (typeof settings)[0]) => {
     setAnchorElUser(null);
+    if (setting.handleClick) await setting.handleClick();
+    if (setting.path) navigate(setting.path);
   };
 
   return (
@@ -79,7 +88,7 @@ export const Header = () => {
               textDecoration: 'none',
             }}
           >
-            Innowise/Task
+            Innowise/Codeland
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -205,8 +214,8 @@ export const Header = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  <MenuItem key={setting.title} onClick={() => handleCloseUserMenu(setting)}>
+                    <Typography sx={{ textAlign: 'center' }}>{setting.title}</Typography>
                   </MenuItem>
                 ))}
               </Menu>

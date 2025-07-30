@@ -3,7 +3,7 @@ import { UserRole } from './responseGetUsers';
 import { StatisticDto } from './statisticDto';
 
 export const UserStatisticDto = z.object({
-  id: z.number(),
+  id: z.string(),
   username: z.string(),
   role: UserRole,
   statistic: StatisticDto,
