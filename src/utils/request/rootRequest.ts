@@ -1,9 +1,11 @@
 import { Methods } from '@enums';
+import { ResponseGetUsers } from '@schemas';
 import { User, UserFull } from '@types';
 import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
 import { Languages } from 'models/enums/languages';
 import { Mark } from 'models/enums/mark';
+import z from 'zod';
 
 type RequestBody = Record<string, unknown>;
 type BaseRequest = {
@@ -52,8 +54,11 @@ class RootRequest {
   public registration = (user: User): Promise<Response> =>
     this.baseRequest({ path: API.REGISTER, method: Methods.POST, body: user });
 
-  public getUsers = (query?: URLSearchParams): Promise<Response> =>
-    this.baseRequest({ path: API.USERS, method: Methods.GET, query });
+  public getUsers = async (query?: URLSearchParams): Promise<z.infer<typeof ResponseGetUsers>> => {
+    const response = await this.baseRequest({ path: API.USERS, method: Methods.GET, query });
+    const result = await response.json();
+    return ResponseGetUsers.parse(result.data);
+  };
 
   public getUser = (id: number): Promise<Response> =>
     this.baseRequest({ path: `${API.USERS}/${id}`, method: Methods.GET });

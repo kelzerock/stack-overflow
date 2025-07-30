@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const UserRole = z.enum(['user', 'admin']);
 
 export const ResponseUserFull = z.object({
-  id: z.number(),
+  id: z.string(),
   username: z.string(),
   role: UserRole,
 });
