@@ -56,6 +56,7 @@ export const Header = () => {
     { name: 'main', path: UrlPath.HOME, viewForAuth: true },
     { name: 'users', path: UrlPath.USERS, viewForAuth: true },
     { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
+    { name: 'questions', path: UrlPath.QUESTIONS, viewForAuth: true },
   ];
 
   const settings = [

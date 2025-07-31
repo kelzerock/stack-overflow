@@ -47,6 +47,7 @@ export const HomePage = () => {
   const handleClick = async () => {
     try {
       const res = await rootRequest.getSnippets();
+      // const res1 = await res.json();
       console.log({ res });
     } catch (error) {
       handleError(error);
@@ -82,6 +83,12 @@ export const HomePage = () => {
                 <span>lang: {snippet.language}</span>
                 <span>code: {snippet.code}</span>
                 <span>user: {snippet.user.username}</span>
+                <span>comments:</span>
+                <div className=" flex flex-col gap-1 border-2 border-red-950 bg-stone-100 rounded-md">
+                  {snippet.comments.map((comment) => (
+                    <span>{comment.content}</span>
+                  ))}
+                </div>
               </div>
             ))}
         </div>

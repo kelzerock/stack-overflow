@@ -1,5 +1,5 @@
 import { Methods } from '@enums';
-import { ResponseGetSnippetsZ, ResponseGetUsers } from '@schemas';
+import { ResponseGetQuestionsZ, ResponseGetSnippetsZ, ResponseGetUsers } from '@schemas';
 import { User, UserFull } from '@types';
 import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
@@ -127,8 +127,13 @@ class RootRequest {
   public deleteComment = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.COMMENTS}/${id}`, method: Methods.DELETE });
 
-  public getQuestions = (query?: URLSearchParams): Promise<Response> =>
-    this.baseRequest({ path: API.QUESTIONS, method: Methods.GET, query });
+  public getQuestions = async (
+    query?: URLSearchParams
+  ): Promise<z.infer<typeof ResponseGetQuestionsZ>> => {
+    const response = await this.baseRequest({ path: API.QUESTIONS, method: Methods.GET, query });
+    const result = await response.json();
+    return ResponseGetQuestionsZ.parse(result.data);
+  };
 
   public addQuestion = (body: {
     title: string;
