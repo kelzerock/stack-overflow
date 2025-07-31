@@ -88,8 +88,10 @@ class RootRequest {
   public patchPassword = (body: { oldPassword: string; newPassword: string }): Promise<Response> =>
     this.baseRequest({ path: API.PATCH_PASS, method: Methods.PATCH, body });
 
-  public getSnippets = async (): Promise<z.infer<typeof ResponseGetSnippetsZ>> => {
-    const response = await this.baseRequest({ path: API.SNIPPETS, method: Methods.GET });
+  public getSnippets = async (
+    query?: URLSearchParams
+  ): Promise<z.infer<typeof ResponseGetSnippetsZ>> => {
+    const response = await this.baseRequest({ path: API.SNIPPETS, method: Methods.GET, query });
     const result = await response.json();
     console.log({ result });
     return ResponseGetSnippetsZ.parse(result.data);
