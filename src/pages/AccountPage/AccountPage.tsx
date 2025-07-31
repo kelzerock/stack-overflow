@@ -1,3 +1,4 @@
+import { UpdateUser } from '@components';
 import { ToastContext } from '@context';
 import { UrlPath } from '@enums';
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
@@ -56,6 +57,7 @@ export const AccountPage = () => {
             </Typography>
           ))}
       </Box>
+      <UpdateUser />
     </div>
   );
 };
