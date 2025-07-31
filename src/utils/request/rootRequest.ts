@@ -1,5 +1,5 @@
 import { Methods } from '@enums';
-import { ResponseGetUsers } from '@schemas';
+import { ResponseGetSnippetsZ, ResponseGetUsers } from '@schemas';
 import { User, UserFull } from '@types';
 import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
@@ -88,8 +88,12 @@ class RootRequest {
   public patchPassword = (body: { oldPassword: string; newPassword: string }): Promise<Response> =>
     this.baseRequest({ path: API.PATCH_PASS, method: Methods.PATCH, body });
 
-  public getSnippets = (): Promise<Response> =>
-    this.baseRequest({ path: API.SNIPPETS, method: Methods.GET });
+  public getSnippets = async (): Promise<z.infer<typeof ResponseGetSnippetsZ>> => {
+    const response = await this.baseRequest({ path: API.SNIPPETS, method: Methods.GET });
+    const result = await response.json();
+    console.log({ result });
+    return ResponseGetSnippetsZ.parse(result.data);
+  };
 
   public addSnippets = (body: { code: string; language: Languages }): Promise<Response> =>
     this.baseRequest({ path: API.SNIPPETS, method: Methods.POST, body });

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { UserRole } from './responseGetUsers';
 import { StatisticDto } from './statisticDto';
+import { UserRole } from '@schemas';
 
 export const UserStatisticDto = z.object({
   id: z.string(),

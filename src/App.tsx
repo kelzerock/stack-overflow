@@ -17,8 +17,6 @@ function App() {
       const response = await rootRequest.authGet();
       if (response.ok) {
         const data = await response.json();
-        console.log({ data });
-        console.log({ test: isFullUserData(data) });
         if (isFullUserData(data)) {
           dispatch(setUser(data.data));
         } else {

@@ -6,12 +6,8 @@ export const HomePage = () => {
   const handleError = useToastErrorHandler();
   const handleClick = async () => {
     try {
-      const res = await rootRequest.authGet();
+      const res = await rootRequest.getSnippets();
       console.log({ res });
-      if (res.ok) {
-        const data = await res.json();
-        console.log({ data });
-      }
     } catch (error) {
       handleError(error);
     }

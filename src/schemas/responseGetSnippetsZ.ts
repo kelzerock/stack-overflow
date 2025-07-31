@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { PageLinksZ } from './pageLinksZ';
-import { UserFullZ } from './userFullZ';
 import { PaginationMetadataZ } from './paginationMetaDataZ';
+import { SnippetZ } from './snippetZ';
 
-export const ResponseGetUsers = z.object({
-  data: z.array(UserFullZ),
+export const ResponseGetSnippetsZ = z.object({
+  data: z.array(SnippetZ),
   meta: PaginationMetadataZ,
   links: PageLinksZ,
 });
