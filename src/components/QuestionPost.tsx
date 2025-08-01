@@ -7,8 +7,10 @@ import { rootRequest } from 'utils/request/rootRequest';
 import { setQuestionsData } from 'store/questionsDataSlice';
 import { getURLSearchParams } from '@utils';
 import { UpdateQuestion } from './UpdateQuestion';
-import { Editor } from '@monaco-editor/react';
-import { editor as monacoEditor } from 'monaco-editor';
+import { basicSetup } from 'codemirror';
+import { EditorView } from '@codemirror/view';
+import { javascript } from '@codemirror/lang-javascript';
+import { EditorState } from '@codemirror/state';
 
 export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ> }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,26 +21,6 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
   const userAuth = useAppSelector((state) => state.user.user);
   const links = useAppSelector((state) => state.questionsData.links);
   const dispatch = useAppDispatch();
-  // const editorRef = useRef<monacoEditor.IStandaloneCodeEditor | null>(null);
-
-  // const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
-  //   editorRef.current = editor;
-  // };
-  const editorRef = useRef<monacoEditor.IStandaloneCodeEditor | null>(null);
-  function handleEditorDidMount(editor: monacoEditor.IStandaloneCodeEditor) {
-    // here is the editor instance
-    // you can store it in `useRef` for further usage
-    editorRef.current = editor;
-  }
-
-  useEffect(() => {
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.dispose();
-        editorRef.current = null;
-      }
-    };
-  }, []);
 
   const {
     user: { username, id },
@@ -48,6 +30,24 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
     answers,
     id: idQuestion,
   } = question;
+
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const editorViewRef = useRef<EditorView | null>(null);
+
+  useEffect(() => {
+    if (editorContainerRef.current) {
+      editorViewRef.current = new EditorView({
+        doc: attachedCode,
+        extensions: [basicSetup, javascript({ typescript: false }), EditorState.readOnly.of(true)],
+        parent: editorContainerRef.current,
+      });
+    }
+
+    return () => {
+      editorViewRef.current?.destroy();
+      editorViewRef.current = null;
+    };
+  }, [attachedCode]);
 
   const handleClick = () => {
     setIsVisible(!isVisible);
@@ -102,18 +102,9 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
         <strong>Description: </strong>
         {description}
       </span>
-      <span>
-        <strong>attached: </strong>
-        {attachedCode}
-      </span>
-      <Editor
-        key={`editor-${idQuestion}`}
-        onMount={handleEditorDidMount}
-        height="100px"
-        defaultLanguage="javascript"
-        defaultValue={attachedCode}
-        value={attachedCode}
-        options={{ readOnly: true }}
+      <div
+        ref={editorContainerRef}
+        className="border-2 border-stone-600  bg-stone-300 rounded-md p-3"
       />
       {userAuth.id === id && (
         <>
@@ -130,7 +121,7 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
             initialQuestion={{
               title: title,
               description: description,
-              attachedCode: attachedCode || '',
+              attachedCode: question.attachedCode || '',
             }}
           />
         </>

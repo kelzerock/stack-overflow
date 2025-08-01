@@ -6,8 +6,10 @@ import { setQuestionsData } from 'store/questionsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import { IoCloseCircle } from 'react-icons/io5';
 import { getURLSearchParams } from '@utils';
-// import { OnChange } from '@monaco-editor/react';
-import { editor as monacoEditor } from 'monaco-editor';
+import { basicSetup } from 'codemirror';
+import { EditorView } from '@codemirror/view';
+import { javascript } from '@codemirror/lang-javascript';
+import { EditorState } from '@codemirror/state';
 
 const style = {
   position: 'absolute',
@@ -23,21 +25,17 @@ const style = {
   p: 4,
 };
 
-const initialQuestionData: { title: string; description: string; attachedCode: string } = {
-  title: '',
-  description: '',
-  attachedCode: '',
-};
+type InitialData = { title: string; description: string; attachedCode: string };
 
 export const UpdateQuestion = ({
   open,
   handleClose,
-  initialQuestion = initialQuestionData,
+  initialQuestion,
   id,
 }: {
   open: boolean;
   handleClose: () => void;
-  initialQuestion?: typeof initialQuestionData;
+  initialQuestion: InitialData;
   id: string;
 }) => {
   const [question, setQuestion] = useState(initialQuestion);
@@ -45,34 +43,39 @@ export const UpdateQuestion = ({
   const handleError = useToastErrorHandler();
   const dispatch = useAppDispatch();
   const links = useAppSelector((state) => state.questionsData.links);
-  const editorRef = useRef<monacoEditor.IStandaloneCodeEditor | null>(null);
 
-  // const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
-  //   editorRef.current = editor;
-  // };
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const editorViewRef = useRef<EditorView | null>(null);
 
   useEffect(() => {
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.dispose();
-        editorRef.current = null;
+    setTimeout(() => {
+      if (editorContainerRef.current) {
+        editorViewRef.current = new EditorView({
+          doc: initialQuestion.attachedCode,
+          extensions: [
+            basicSetup,
+            javascript({ typescript: false }),
+            EditorState.readOnly.of(false),
+          ],
+          parent: editorContainerRef.current,
+        });
       }
-    };
-  }, []);
+    }, 0);
 
-  // const handleChangeEditor: OnChange = (value) => {
-  //   const handleValue = value === undefined ? '' : value;
-  //   setQuestion((prev) => ({ ...prev, attachedCode: handleValue }));
-  // };
+    return () => {
+      editorViewRef.current?.destroy();
+      editorViewRef.current = null;
+    };
+  }, [open, question]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ question });
-    const { title, description, attachedCode } = question;
-    if (title && description && attachedCode) {
-      // handleClose();
+
+    const content = editorViewRef.current?.state.doc.toString();
+    const { title, description } = question;
+    if (title && description && content) {
       rootRequest
-        .updateQuestion(id, question)
+        .updateQuestion(id, { ...question, attachedCode: content })
         .then((response) => {
           if (response.ok) {
             pushToast({ type: 'success', message: 'Your question successfully updated!' });
@@ -128,22 +131,11 @@ export const UpdateQuestion = ({
               value={question.description}
               onChange={(e) => handleChange(e, 'description')}
             />
-            <TextField
-              id="outlined-basic"
-              label="Description"
-              variant="outlined"
-              value={question.attachedCode}
-              onChange={(e) => handleChange(e, 'attachedCode')}
+            <div
+              ref={editorContainerRef}
+              className="border-2 border-stone-600  bg-stone-300 rounded-md p-3"
             />
-            {/* <Editor
-              onMount={handleEditorMount}
-              height="100px"
-              defaultLanguage="javascript"
-              defaultValue={question.attachedCode}
-              value={question.attachedCode}
-              onChange={handleChangeEditor}
-              options={{ readOnly: !open }}
-            /> */}
+
             <Button size="small" variant="contained" color="success" type="submit">
               Publish
             </Button>
