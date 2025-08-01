@@ -149,7 +149,7 @@ class RootRequest {
     id: string,
     body: { title: string; description: string; attachedCode: string }
   ): Promise<Response> =>
-    this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.POST, body });
+    this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.PATCH, body });
 
   public deleteQuestion = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.QUESTIONS}/${id}`, method: Methods.DELETE });

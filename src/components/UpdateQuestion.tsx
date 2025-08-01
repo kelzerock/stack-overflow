@@ -1,12 +1,13 @@
 import { ToastContext } from '@context';
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
-import { Editor, OnChange } from '@monaco-editor/react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { setQuestionsData } from 'store/questionsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import { IoCloseCircle } from 'react-icons/io5';
 import { getURLSearchParams } from '@utils';
+// import { OnChange } from '@monaco-editor/react';
+import { editor as monacoEditor } from 'monaco-editor';
 
 const style = {
   position: 'absolute',
@@ -28,40 +29,53 @@ const initialQuestionData: { title: string; description: string; attachedCode: s
   attachedCode: '',
 };
 
-export const CreateQuestion = ({
+export const UpdateQuestion = ({
   open,
   handleClose,
   initialQuestion = initialQuestionData,
+  id,
 }: {
   open: boolean;
   handleClose: () => void;
   initialQuestion?: typeof initialQuestionData;
+  id: string;
 }) => {
   const [question, setQuestion] = useState(initialQuestion);
   const { pushToast } = useContext(ToastContext);
   const handleError = useToastErrorHandler();
   const dispatch = useAppDispatch();
   const links = useAppSelector((state) => state.questionsData.links);
+  const editorRef = useRef<monacoEditor.IStandaloneCodeEditor | null>(null);
 
-  const resetInputs = () => {
-    setQuestion(Object.assign({}, initialQuestionData));
-  };
+  // const handleEditorMount = (editor: monacoEditor.IStandaloneCodeEditor) => {
+  //   editorRef.current = editor;
+  // };
 
-  const handleChangeEditor: OnChange = (value) => {
-    const handleValue = value === undefined ? '' : value;
-    setQuestion((prev) => ({ ...prev, attachedCode: handleValue }));
-  };
+  useEffect(() => {
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.dispose();
+        editorRef.current = null;
+      }
+    };
+  }, []);
+
+  // const handleChangeEditor: OnChange = (value) => {
+  //   const handleValue = value === undefined ? '' : value;
+  //   setQuestion((prev) => ({ ...prev, attachedCode: handleValue }));
+  // };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log({ question });
     const { title, description, attachedCode } = question;
     if (title && description && attachedCode) {
+      // handleClose();
       rootRequest
-        .addQuestion(question)
+        .updateQuestion(id, question)
         .then((response) => {
           if (response.ok) {
-            pushToast({ type: 'success', message: 'Your question successfully created!' });
-            resetInputs();
+            pushToast({ type: 'success', message: 'Your question successfully updated!' });
             const query = getURLSearchParams(links?.current || '');
             rootRequest.getQuestions(query).then((res) => dispatch(setQuestionsData(res)));
           }
@@ -92,13 +106,10 @@ export const CreateQuestion = ({
         <IoCloseCircle
           className="absolute top-1 right-1 text-stone-500 hover:cursor-pointer hover:scale-105 transition-transform duration-300"
           size="3em"
-          onClick={() => {
-            handleClose();
-            resetInputs();
-          }}
+          onClick={handleClose}
         />
         <Typography id="modal-modal-title" variant="h4" component="h2">
-          Create your own question! Fill the form.
+          Update your own question!
         </Typography>
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1">
@@ -106,8 +117,8 @@ export const CreateQuestion = ({
               id="outlined-basic"
               label="Title"
               variant="outlined"
-              onChange={(e) => handleChange(e, 'title')}
               value={question.title}
+              onChange={(e) => handleChange(e, 'title')}
               className="w-full"
             />
             <TextField
@@ -117,15 +128,22 @@ export const CreateQuestion = ({
               value={question.description}
               onChange={(e) => handleChange(e, 'description')}
             />
-            {open && (
-              <Editor
-                height="100px"
-                defaultLanguage="javascript"
-                defaultValue={question.attachedCode}
-                value={question.attachedCode}
-                onChange={handleChangeEditor}
-              />
-            )}
+            <TextField
+              id="outlined-basic"
+              label="Description"
+              variant="outlined"
+              value={question.attachedCode}
+              onChange={(e) => handleChange(e, 'attachedCode')}
+            />
+            {/* <Editor
+              onMount={handleEditorMount}
+              height="100px"
+              defaultLanguage="javascript"
+              defaultValue={question.attachedCode}
+              value={question.attachedCode}
+              onChange={handleChangeEditor}
+              options={{ readOnly: !open }}
+            /> */}
             <Button size="small" variant="contained" color="success" type="submit">
               Publish
             </Button>
