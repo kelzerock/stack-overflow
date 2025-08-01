@@ -1,5 +1,7 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { getURLSearchParams } from '@utils';
+import { CreateQuestion } from 'components/CreateQuestion';
 import { PaginationBlock } from 'components/PaginationBlock';
 import { QuestionPost } from 'components/QuestionPost';
 import { useEffect, useState } from 'react';
@@ -12,6 +14,10 @@ export const QuestionsPage = () => {
   const { data } = questionsData;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const pagination = useAppSelector((state) => state.questionsData.links);
   const meta = useAppSelector((state) => state.questionsData.meta);
   const dispatch = useAppDispatch();
@@ -19,8 +25,7 @@ export const QuestionsPage = () => {
 
   const loadPage = async (url: string) => {
     setIsLoading(true);
-    const queryString = url.split('?')[1];
-    const query = new URLSearchParams(queryString);
+    const query = getURLSearchParams(url);
     try {
       dispatch(setQuestionsData(await rootRequest.getQuestions(query)));
     } catch (error) {
@@ -49,6 +54,10 @@ export const QuestionsPage = () => {
       <Typography component="h1" sx={{ fontSize: 32, textTransform: 'uppercase', fontWeight: 500 }}>
         Questions from users
       </Typography>
+      <Button size="small" variant="contained" color="success" onClick={handleOpen}>
+        Create question
+      </Button>
+      <CreateQuestion open={open} handleClose={handleClose} />
       <PaginationBlock
         pagination={pagination}
         title="questions"

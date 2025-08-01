@@ -1,3 +1,4 @@
+export { AttachedCodeZ } from './attachedCodeZ';
 export { ResponseGetQuestionsZ } from './responseGetQuestionsZ';
 export { QuestionZ } from './questionZ';
 export { ResponseGetSnippetsZ } from './responseGetSnippetsZ';

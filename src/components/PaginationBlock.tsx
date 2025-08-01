@@ -16,7 +16,7 @@ export const PaginationBlock = ({
   title: string;
 }) => {
   return (
-    <div className="w-5/6 bg-stone-100 rounded-md p-2 gap-1 flex-col flex items-center">
+    <div className="w-full sm:w-5/6 bg-stone-100 rounded-md p-2 gap-1 flex-col flex items-center">
       <ButtonGroup variant="contained" size="small" aria-label="Basic button group">
         <Button
           disabled={!pagination?.first}
