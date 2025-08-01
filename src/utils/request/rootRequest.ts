@@ -18,6 +18,7 @@ type BaseRequest = {
 
 class RootRequest {
   private baseRequest = async ({ path, method, body, query }: BaseRequest): Promise<Response> => {
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     const options: RequestInit = {
       method,
       headers: {
@@ -30,7 +31,7 @@ class RootRequest {
     }
 
     const response = await fetch(
-      `${LINK_TO_SERVER}${path}${query ? `?${query.toString()}` : ''}`,
+      `${LINK_TO_SERVER}${normalizedPath}${query ? `?${query.toString()}` : ''}`,
       options
     );
 
