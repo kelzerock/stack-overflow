@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Typography } from '@mui/material';
 import { PaginationBlock } from 'components/PaginationBlock';
+import { QuestionPost } from 'components/QuestionPost';
 import { useEffect, useState } from 'react';
 import { setQuestionsData } from 'store/questionsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
@@ -58,22 +59,7 @@ export const QuestionsPage = () => {
       <div className="flex flex-col gap-0.5 p-2 w-full border-2 border-emerald-800 rounded-2xl">
         {data.length === 0 && <h2>Questions absent</h2>}
         {data.length > 0 &&
-          data.map((question) => (
-            <div key={question.id} className="p-2 bg-emerald-200 rounded-md flex flex-col gap-1">
-              <span>{question.user.username}</span>
-              <span>{question.title}</span>
-              <span>{question.attachedCode}</span>
-              <span>{question.description}</span>
-              <span>answer:</span>
-              <div className=" border-2 rounded-md p-1 flex flex-col gap-0.5">
-                {question.answers.map((answer) => (
-                  <p key={answer.id} className=" bg-stone-100 p-1 break-words">
-                    {answer.content}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ))}
+          data.map((question) => <QuestionPost question={question} key={question.id} />)}
       </div>
     </div>
   );
