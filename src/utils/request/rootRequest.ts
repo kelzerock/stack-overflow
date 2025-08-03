@@ -133,6 +133,7 @@ class RootRequest {
   ): Promise<z.infer<typeof ResponseGetQuestionsZ>> => {
     const response = await this.baseRequest({ path: API.QUESTIONS, method: Methods.GET, query });
     const result = await response.json();
+    console.log({ questins: result });
     return ResponseGetQuestionsZ.parse(result.data);
   };
 
@@ -157,7 +158,7 @@ class RootRequest {
   public getAnswers = (): Promise<Response> =>
     this.baseRequest({ path: API.ANSWERS, method: Methods.GET });
 
-  public addAnswer = (body: { content: string; questionid: string }): Promise<Response> =>
+  public addAnswer = (body: { content: string; questionId: string }): Promise<Response> =>
     this.baseRequest({ path: API.ANSWERS, method: Methods.POST, body });
 
   public markAnswer = (id: string, state: 'correct' | 'incorrect'): Promise<Response> =>
@@ -171,3 +172,10 @@ class RootRequest {
 }
 
 export const rootRequest = new RootRequest();
+
+// 5
+// :
+// {id: '169', content: 'test answer', isCorrect: false}
+// 6
+// :
+// {id: '168', content: 'test answer', isCorrect: false}

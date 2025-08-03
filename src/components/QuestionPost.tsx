@@ -11,12 +11,16 @@ import { basicSetup } from 'codemirror';
 import { EditorView } from '@codemirror/view';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorState } from '@codemirror/state';
+import { AddAnswer } from './AddAnswer';
 
 export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ> }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openAnswer, setOpenAnswer] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenAnswer = () => setOpenAnswer(true);
+  const handleCloseAnswer = () => setOpenAnswer(false);
   const handleError = useToastErrorHandler();
   const userAuth = useAppSelector((state) => state.user.user);
   const links = useAppSelector((state) => state.questionsData.links);
@@ -126,6 +130,10 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
           />
         </>
       )}
+      <Button variant="contained" size="small" color="success" onClick={handleOpenAnswer}>
+        Send answer
+      </Button>
+      <AddAnswer open={openAnswer} handleClose={handleCloseAnswer} idQuestion={idQuestion} />
       {answers.length === 0 ? noAnswer : answersBlock}
     </div>
   );

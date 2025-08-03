@@ -1,15 +1,11 @@
 import { ToastContext } from '@context';
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import { setQuestionsData } from 'store/questionsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import { IoCloseCircle } from 'react-icons/io5';
 import { getURLSearchParams } from '@utils';
-import { basicSetup } from 'codemirror';
-import { EditorView } from '@codemirror/view';
-import { javascript } from '@codemirror/lang-javascript';
-import { EditorState } from '@codemirror/state';
 
 const style = {
   position: 'absolute',
@@ -25,55 +21,29 @@ const style = {
   p: 4,
 };
 
-type InitialData = { title: string; description: string; attachedCode: string };
-
-export const UpdateQuestion = ({
+export const AddAnswer = ({
   open,
   handleClose,
-  initialQuestion,
-  id,
+  idQuestion,
 }: {
   open: boolean;
   handleClose: () => void;
-  initialQuestion: InitialData;
-  id: string;
+  idQuestion: string;
 }) => {
-  const [question, setQuestion] = useState(initialQuestion);
+  const [answer, setAnswer] = useState('');
   const { pushToast } = useContext(ToastContext);
   const handleError = useToastErrorHandler();
   const dispatch = useAppDispatch();
   const links = useAppSelector((state) => state.questionsData.links);
 
-  const editorContainerRef = useRef<HTMLDivElement>(null);
-  const editorViewRef = useRef<EditorView | null>(null);
-
-  useEffect(() => {
-    if (editorContainerRef.current) {
-      console.log('test');
-      editorViewRef.current = new EditorView({
-        doc: initialQuestion.attachedCode,
-        extensions: [basicSetup, javascript({ typescript: false }), EditorState.readOnly.of(false)],
-        parent: editorContainerRef.current,
-      });
-    }
-
-    return () => {
-      editorViewRef.current?.destroy();
-      editorViewRef.current = null;
-    };
-  }, [open]);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const content = editorViewRef.current?.state.doc.toString();
-    const { title, description } = question;
-    if (title && description && content) {
+    if (answer.trim()) {
       rootRequest
-        .updateQuestion(id, { ...question, attachedCode: content })
+        .addAnswer({ questionId: idQuestion, content: answer.trim() })
         .then((response) => {
           if (response.ok) {
-            pushToast({ type: 'success', message: 'Your question successfully updated!' });
+            pushToast({ type: 'success', message: 'Your answer successfully added!' });
             const query = getURLSearchParams(links?.current || '');
             rootRequest.getQuestions(query).then((res) => dispatch(setQuestionsData(res)));
           }
@@ -85,12 +55,9 @@ export const UpdateQuestion = ({
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    key: keyof typeof question
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (e.target) {
-      setQuestion((prev) => ({ ...prev, [key]: e.target.value }));
+      setAnswer(e.target.value);
     }
   };
 
@@ -109,28 +76,17 @@ export const UpdateQuestion = ({
           onClick={handleClose}
         />
         <Typography id="modal-modal-title" variant="h4" component="h2">
-          Update your own question!
+          Add answer!
         </Typography>
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1">
             <TextField
               id="outlined-basic"
-              label="Title"
+              label="Answer"
               variant="outlined"
-              value={question.title}
-              onChange={(e) => handleChange(e, 'title')}
+              value={answer}
+              onChange={handleChange}
               className="w-full"
-            />
-            <TextField
-              id="outlined-basic"
-              label="Description"
-              variant="outlined"
-              value={question.description}
-              onChange={(e) => handleChange(e, 'description')}
-            />
-            <div
-              ref={editorContainerRef}
-              className="border-2 border-stone-600  bg-stone-300 rounded-md p-3"
             />
 
             <Button size="small" variant="contained" color="success" type="submit">

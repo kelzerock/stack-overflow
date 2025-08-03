@@ -86,7 +86,7 @@ export const HomePage = () => {
                 <span>comments:</span>
                 <div className=" flex flex-col gap-1 border-2 border-red-950 bg-stone-100 rounded-md">
                   {snippet.comments.map((comment) => (
-                    <span>{comment.content}</span>
+                    <span key={comment.id}>{comment.content}</span>
                   ))}
                 </div>
               </div>
