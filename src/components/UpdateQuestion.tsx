@@ -48,25 +48,22 @@ export const UpdateQuestion = ({
   const editorViewRef = useRef<EditorView | null>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (editorContainerRef.current) {
-        editorViewRef.current = new EditorView({
-          doc: initialQuestion.attachedCode,
-          extensions: [
-            basicSetup,
-            javascript({ typescript: false }),
-            EditorState.readOnly.of(false),
-          ],
-          parent: editorContainerRef.current,
-        });
-      }
-    }, 0);
+    // setTimeout(() => {
+    if (editorContainerRef.current) {
+      console.log('test');
+      editorViewRef.current = new EditorView({
+        doc: initialQuestion.attachedCode,
+        extensions: [basicSetup, javascript({ typescript: false }), EditorState.readOnly.of(false)],
+        parent: editorContainerRef.current,
+      });
+    }
+    // }, 0);
 
     return () => {
       editorViewRef.current?.destroy();
       editorViewRef.current = null;
     };
-  }, [open, question]);
+  }, [open]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,12 +95,14 @@ export const UpdateQuestion = ({
       setQuestion((prev) => ({ ...prev, [key]: e.target.value }));
     }
   };
+
   return (
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      keepMounted
     >
       <Box sx={style}>
         <IoCloseCircle

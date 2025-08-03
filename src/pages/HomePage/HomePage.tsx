@@ -46,9 +46,9 @@ export const HomePage = () => {
 
   const handleClick = async () => {
     try {
-      const res = await rootRequest.getSnippets();
-      // const res1 = await res.json();
-      console.log({ res });
+      const res = await rootRequest.getAnswers();
+      const res1 = await res.json();
+      console.log({ res1 });
     } catch (error) {
       handleError(error);
     }
