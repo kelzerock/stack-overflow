@@ -2,20 +2,24 @@ import { SnippetZ } from '@schemas';
 import z from 'zod';
 import { DiCodeBadge } from 'react-icons/di';
 import { FaUserTie } from 'react-icons/fa';
-import { MdOutlineInsertComment } from 'react-icons/md';
-import { MdOutlineModeComment } from 'react-icons/md';
 import { useEffect, useRef } from 'react';
 import { basicSetup, EditorView } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorState } from '@codemirror/state';
 import { ReactionsPanel } from './ReactionsPanel';
+import { CommentLabel } from './CommentLabel';
 
-export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
+export const Snippet = ({
+  snippet,
+  isSinglePost = false,
+}: {
+  snippet: z.infer<typeof SnippetZ>;
+  isSinglePost?: boolean;
+}) => {
   const {
     id: snippetId,
     language,
     user: { username },
-    comments,
     code,
     marks,
   } = snippet;
@@ -37,7 +41,6 @@ export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
     };
   }, [code]);
 
-  const commentsCount = comments.length;
   return (
     <div className="bg-stone-300 flex flex-col gap-3 rounded-sm">
       <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
@@ -50,17 +53,7 @@ export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
       </div>
       <div ref={editorContainerRef} className="p-3"></div>
       <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
-        <span className="flex items-center gap-2">
-          {commentsCount === 0 ? (
-            <>
-              <MdOutlineModeComment /> 0
-            </>
-          ) : (
-            <>
-              <MdOutlineInsertComment /> {commentsCount}
-            </>
-          )}
-        </span>
+        {!isSinglePost && <CommentLabel snippet={snippet} />}
         <ReactionsPanel marks={marks} snippetId={snippetId} />
       </div>
     </div>

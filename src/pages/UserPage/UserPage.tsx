@@ -8,7 +8,6 @@ import z from 'zod';
 export const UserPage = () => {
   const { profileID } = useParams<{ profileID: string }>();
   const navigate = useNavigate();
-  console.log(profileID);
   const [user, setUser] = useState<z.infer<typeof UserStatisticDto> | null>(null);
 
   const statEntries = user ? Object.entries(user.statistic) : null;

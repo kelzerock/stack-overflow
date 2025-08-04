@@ -1,5 +1,13 @@
 import { UrlPath } from '@enums';
-import { AboutPage, ErrorPage, HomePage, RegistrationPage, SignInPage } from '@pages';
+import {
+  AboutPage,
+  ErrorPage,
+  HomePage,
+  PostPage,
+  PostStub,
+  RegistrationPage,
+  SignInPage,
+} from '@pages';
 import App from 'App';
 import { AccountPage } from 'pages/AccountPage/AccountPage';
 import { QuestionsPage } from 'pages/QuestionsPage/QuestionsPage';
@@ -17,6 +25,14 @@ export const router = createBrowserRouter([
           {
             path: UrlPath.HOME,
             Component: HomePage,
+          },
+          {
+            path: UrlPath.POST,
+            Component: PostStub,
+          },
+          {
+            path: `${UrlPath.POST}/:postID`,
+            Component: PostPage,
           },
           {
             path: UrlPath.REGISTRATION,
