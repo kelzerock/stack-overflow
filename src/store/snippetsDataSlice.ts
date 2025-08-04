@@ -7,16 +7,17 @@ type SnippetsState = {
   data: z.infer<typeof ResponseGetSnippetsZ>['data'];
   meta: z.infer<typeof ResponseGetSnippetsZ>['meta'] | null;
   links: z.infer<typeof ResponseGetSnippetsZ>['links'] | null;
+  singleSnippet: z.infer<typeof ResponseGetSnippetZ>['data'] | null;
 };
 
-const initialState: SnippetsState = { data: [], meta: null, links: null };
+const initialState: SnippetsState = { data: [], meta: null, links: null, singleSnippet: null };
 
 export const snippetsDataSlice = createSlice({
   name: 'snippetsData',
   initialState,
   reducers: {
     setSnippetsData: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetsZ>>) => {
-      return { ...action.payload };
+      return { ...state, ...action.payload };
     },
     updateSnippetData: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetZ>>) => {
       return {
@@ -30,10 +31,14 @@ export const snippetsDataSlice = createSlice({
         }),
       };
     },
+    updateSingleSnippet: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetZ>>) => {
+      return { ...state, singleSnippet: action.payload.data };
+    },
     deleteSnippetsData: () => Object.assign({}, initialState),
   },
 });
 
-export const { setSnippetsData, deleteSnippetsData, updateSnippetData } = snippetsDataSlice.actions;
+export const { setSnippetsData, deleteSnippetsData, updateSnippetData, updateSingleSnippet } =
+  snippetsDataSlice.actions;
 
 export default snippetsDataSlice.reducer;

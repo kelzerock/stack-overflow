@@ -1,24 +1,80 @@
-import { Snippet } from '@components';
+import { AddComment, Snippet } from '@components';
+import { UrlPath } from '@enums';
 import { useAppSelector } from '@hooks';
+import { Button } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { FaUserTie } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
+import { updateSingleSnippet } from 'store/snippetsDataSlice';
+import { rootRequest } from 'utils/request/rootRequest';
 
 export const PostPage = () => {
   const { postID } = useParams<{ postID: string }>();
+  const dispatch = useDispatch();
+  const snippet = useAppSelector((state) => state.snippetsData.singleSnippet);
+  const [openComment, setOpenComment] = useState(false);
+  const handleOpenComment = () => setOpenComment(true);
+  const handleCloseComment = () => setOpenComment(false);
   const navigate = useNavigate();
-  const snippets = useAppSelector((state) => state.snippetsData.data);
-  const snippet = snippets.find((item) => item.id === postID);
+
+  useEffect(() => {
+    rootRequest.getSnippet(postID || '').then((result) => dispatch(updateSingleSnippet(result)));
+  }, []);
 
   if (snippet) {
+    const {
+      comments,
+      user: { username },
+      id,
+    } = snippet;
     return (
-      <div>
-        <h1 className=" font-bold text-2xl">Snippet from user: {snippet.user.username}</h1>
+      <div className="flex flex-col gap-2 ">
+        <h1 className=" font-bold text-2xl">Snippet from user: {username}</h1>
+        <button
+          className="p-2 rounded-md bg-stone-300 hover:cursor-pointer hover:bg-stone-400 self-start"
+          onClick={() => navigate(UrlPath.HOME)}
+        >
+          View All Snippets
+        </button>
         <Snippet snippet={snippet} isSinglePost={true} />
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className="self-start"
+          onClick={handleOpenComment}
+        >
+          Add comment
+        </Button>
+        {openComment && (
+          <AddComment snippetId={id} handleClose={handleCloseComment} open={openComment} />
+        )}
+        <div className="flex flex-col gap-2">
+          {comments.map((item) => {
+            const {
+              id,
+              user: { username },
+              content,
+            } = item;
+            return (
+              <div key={id}>
+                <div className="flex bg-stone-100 border-4 border-stone-300">
+                  <span className="flex bg-stone-300 items-center basis-1/3 sm:basis-1/5 md:basis-1/6 shrink-0 p-2 justify-start">
+                    <FaUserTie /> {username}
+                  </span>
+                  <span className=" grow flex items-center justify-start p-2">{content}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   } else {
     return (
       <div>
-        <h1>Sorry, this post absent!</h1>
+        <h1 className=" text-2xl">Sorry, this post absent!</h1>
         <button onClick={() => navigate(-1)}>Go back</button>
       </div>
     );

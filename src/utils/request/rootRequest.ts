@@ -123,7 +123,7 @@ class RootRequest {
   public markSnippet = (id: string, body: { mark: Mark }): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}/mark`, method: Methods.POST, body });
 
-  public addComment = (body: { content: string; snippetid: string }): Promise<Response> =>
+  public addComment = (body: { content: string; snippetId: string }): Promise<Response> =>
     this.baseRequest({ path: API.COMMENTS, method: Methods.POST, body });
 
   public updateComment = (id: string, body: { content: string }): Promise<Response> =>
