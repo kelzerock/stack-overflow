@@ -1,9 +1,8 @@
-import { AddComment, Snippet } from '@components';
+import { AddComment, CommentList, Snippet } from '@components';
 import { UrlPath } from '@enums';
 import { useAppSelector } from '@hooks';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { FaUserTie } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { updateSingleSnippet } from 'store/snippetsDataSlice';
@@ -50,25 +49,7 @@ export const PostPage = () => {
         {openComment && (
           <AddComment snippetId={id} handleClose={handleCloseComment} open={openComment} />
         )}
-        <div className="flex flex-col gap-2">
-          {comments.map((item) => {
-            const {
-              id,
-              user: { username },
-              content,
-            } = item;
-            return (
-              <div key={id}>
-                <div className="flex bg-stone-100 border-4 border-stone-300">
-                  <span className="flex bg-stone-300 items-center basis-1/3 sm:basis-1/5 md:basis-1/6 shrink-0 p-2 justify-start">
-                    <FaUserTie /> {username}
-                  </span>
-                  <span className=" grow flex items-center justify-start p-2">{content}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <CommentList comments={comments} />
       </div>
     );
   } else {
