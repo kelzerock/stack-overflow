@@ -5,3 +5,13 @@ body,
 #root {
   min-height: 100vh;
 }
+
+.cm-editor {
+  /* or .cm-wrap */
+  max-height: 300px;
+  /* Example max height */
+}
+
+.cm-scroller {
+  overflow: auto;
+}

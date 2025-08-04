@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Button, Typography } from '@mui/material';
 import { PaginationBlock } from 'components/PaginationBlock';
+import { Snippet } from 'components/Snippet';
 import { useEffect, useState } from 'react';
 import { setSnippetsData } from 'store/snippetsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
@@ -77,20 +78,7 @@ export const HomePage = () => {
         />
         <div className="flex flex-col gap-0.5 p-2 w-full">
           {data.length === 0 && <h2>Snippets absent</h2>}
-          {data.length > 0 &&
-            data.map((snippet) => (
-              <div key={snippet.id} className="p-2 bg-stone-100 flex justify-start gap3">
-                <span>lang: {snippet.language}</span>
-                <span>code: {snippet.code}</span>
-                <span>user: {snippet.user.username}</span>
-                <span>comments:</span>
-                <div className=" flex flex-col gap-1 border-2 border-red-950 bg-stone-100 rounded-md">
-                  {snippet.comments.map((comment) => (
-                    <span key={comment.id}>{comment.content}</span>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {data.length > 0 && data.map((snippet) => <Snippet key={snippet.id} snippet={snippet} />)}
         </div>
       </div>
     </div>

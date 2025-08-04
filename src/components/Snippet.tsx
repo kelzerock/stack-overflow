@@ -1,0 +1,67 @@
+import { SnippetZ } from '@schemas';
+import z from 'zod';
+import { DiCodeBadge } from 'react-icons/di';
+import { FaUserTie } from 'react-icons/fa';
+import { MdOutlineInsertComment } from 'react-icons/md';
+import { MdOutlineModeComment } from 'react-icons/md';
+import { useEffect, useRef } from 'react';
+import { basicSetup, EditorView } from 'codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { EditorState } from '@codemirror/state';
+import { ReactionsPanel } from './ReactionsPanel';
+
+export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
+  const {
+    language,
+    user: { username },
+    comments,
+    code,
+    marks,
+  } = snippet;
+  const editorContainerRef = useRef<HTMLDivElement>(null);
+  const editorViewRef = useRef<EditorView | null>(null);
+
+  useEffect(() => {
+    if (editorContainerRef.current) {
+      editorViewRef.current = new EditorView({
+        doc: code,
+        extensions: [basicSetup, javascript({ typescript: false }), EditorState.readOnly.of(true)],
+        parent: editorContainerRef.current,
+      });
+    }
+
+    return () => {
+      editorViewRef.current?.destroy();
+      editorViewRef.current = null;
+    };
+  }, [snippet.code]);
+
+  const commentsCount = comments.length;
+  return (
+    <div className="bg-stone-300 flex flex-col gap-3 rounded-sm">
+      <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
+        <span className="flex gap-1 items-center">
+          <FaUserTie /> {username}
+        </span>
+        <span className="flex gap-1 items-center">
+          <DiCodeBadge /> {language}
+        </span>
+      </div>
+      <div ref={editorContainerRef} className="p-3"></div>
+      <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
+        <span className="flex items-center gap-2">
+          {commentsCount === 0 ? (
+            <>
+              <MdOutlineModeComment /> 0
+            </>
+          ) : (
+            <>
+              <MdOutlineInsertComment /> {commentsCount}
+            </>
+          )}
+        </span>
+        <ReactionsPanel marks={marks} />
+      </div>
+    </div>
+  );
+};
