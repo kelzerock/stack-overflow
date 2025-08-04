@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { PaginationBlock } from 'components/PaginationBlock';
 import { Snippet } from 'components/Snippet';
 import { useEffect, useState } from 'react';
@@ -7,7 +7,7 @@ import { setSnippetsData } from 'store/snippetsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
 
-export const HomePage = () => {
+export const MyPostPage = () => {
   const snippetsData = useAppSelector((state) => state.snippetsData);
   const { data } = snippetsData;
 
@@ -44,29 +44,14 @@ export const HomePage = () => {
         });
   }, []);
 
-  const handleClick = async () => {
-    try {
-      const res = await rootRequest.getAnswers();
-      const res1 = await res.json();
-      console.log({ res1 });
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
   return (
     <div>
-      <h1>HomePage</h1>
-      <Button variant="outlined" onClick={handleClick}>
-        Click
-      </Button>
-
       <div className="flex flex-col gap-2 items-center">
         <Typography
           component="h1"
           sx={{ fontSize: 32, textTransform: 'uppercase', fontWeight: 500 }}
         >
-          Snippets from users
+          Your own snippets
         </Typography>
         <PaginationBlock
           pagination={pagination}

@@ -3,9 +3,9 @@ import { FaUserTie } from 'react-icons/fa';
 import { CommentForOneSnippetZ } from 'schemas/commentForOneSnippetZ';
 import z from 'zod';
 import { CiSquareRemove } from 'react-icons/ci';
-import { MdPublishedWithChanges } from 'react-icons/md';
 import { rootRequest } from 'utils/request/rootRequest';
 import { updateSingleSnippet } from 'store/snippetsDataSlice';
+import { EditComment } from './EditComment';
 
 export const SingleComment = ({ comment }: { comment: z.infer<typeof CommentForOneSnippetZ> }) => {
   const authUserId = useAppSelector((state) => state.user.user.id);
@@ -37,12 +37,7 @@ export const SingleComment = ({ comment }: { comment: z.infer<typeof CommentForO
       </span>
       {isAuthUserPost && (
         <div className="flex bg-stone-300">
-          <button
-            className="p-2 
-          bg-stone-300 hover:cursor-pointer hover:bg-stone-400 text-emerald-500 hover:text-emerald-600 transition-colors duration-300 self-start"
-          >
-            <MdPublishedWithChanges size={30} className=" hover:scale-110" />
-          </button>
+          <EditComment commentInfo={comment} />
           <button
             className="p-2 
           bg-stone-300 hover:cursor-pointer hover:bg-stone-400 text-red-600 hover:text-red-800 transition-colors duration-300 self-start"

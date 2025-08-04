@@ -57,6 +57,7 @@ export const Header = () => {
     { name: 'users', path: UrlPath.USERS, viewForAuth: true },
     { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
     { name: 'questions', path: UrlPath.QUESTIONS, viewForAuth: true },
+    { name: 'my posts', path: UrlPath.MY_POSTS, viewForAuth: true },
   ];
 
   const settings = [

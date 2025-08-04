@@ -10,6 +10,7 @@ import {
 } from '@pages';
 import App from 'App';
 import { AccountPage } from 'pages/AccountPage/AccountPage';
+import { MyPostPage } from 'pages/MYPostPage/MyPostPage';
 import { QuestionsPage } from 'pages/QuestionsPage/QuestionsPage';
 import { UserPage } from 'pages/UserPage/UserPage';
 import { UsersPage } from 'pages/Users/UsersPage';
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
           },
           { path: UrlPath.ABOUT, Component: AboutPage },
           { path: UrlPath.USERS, Component: UsersPage },
+          { path: UrlPath.MY_POSTS, Component: MyPostPage },
           { path: `${UrlPath.USERS}/:profileID`, Component: UserPage },
           { path: UrlPath.ACCOUNT, Component: AccountPage },
           { path: UrlPath.QUESTIONS, Component: QuestionsPage },

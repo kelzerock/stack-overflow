@@ -56,7 +56,7 @@ export const UsersPage = () => {
         isLoading={isLoading}
         loadPage={loadPage}
       />
-      <div className="flex flex-col gap-0.5 p-2 w-full">
+      <div className="flex justify-center gap-2 p-2 w-full flex-wrap">
         {data.length === 0 && <h2>Users absent</h2>}
         {data.length > 0 && data.map((user) => <UserItem user={user} key={user.id} />)}
       </div>
