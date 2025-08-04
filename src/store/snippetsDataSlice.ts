@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ResponseGetSnippetsZ } from '@schemas';
+import { ResponseGetSnippetZ } from 'schemas/responseGetSnippetZ';
 import z from 'zod';
 
 type SnippetsState = {
@@ -17,10 +18,22 @@ export const snippetsDataSlice = createSlice({
     setSnippetsData: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetsZ>>) => {
       return { ...action.payload };
     },
+    updateSnippetData: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetZ>>) => {
+      return {
+        ...state,
+        data: state.data.map((snippet) => {
+          if (snippet.id === action.payload.data.id) {
+            return action.payload.data;
+          } else {
+            return snippet;
+          }
+        }),
+      };
+    },
     deleteSnippetsData: () => Object.assign({}, initialState),
   },
 });
 
-export const { setSnippetsData, deleteSnippetsData } = snippetsDataSlice.actions;
+export const { setSnippetsData, deleteSnippetsData, updateSnippetData } = snippetsDataSlice.actions;
 
 export default snippetsDataSlice.reducer;

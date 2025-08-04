@@ -12,6 +12,7 @@ import { ReactionsPanel } from './ReactionsPanel';
 
 export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
   const {
+    id: snippetId,
     language,
     user: { username },
     comments,
@@ -34,7 +35,7 @@ export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
       editorViewRef.current?.destroy();
       editorViewRef.current = null;
     };
-  }, [snippet.code]);
+  }, [code]);
 
   const commentsCount = comments.length;
   return (
@@ -60,7 +61,7 @@ export const Snippet = ({ snippet }: { snippet: z.infer<typeof SnippetZ> }) => {
             </>
           )}
         </span>
-        <ReactionsPanel marks={marks} />
+        <ReactionsPanel marks={marks} snippetId={snippetId} />
       </div>
     </div>
   );

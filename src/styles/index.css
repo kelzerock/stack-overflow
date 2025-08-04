@@ -7,11 +7,13 @@ body,
 }
 
 .cm-editor {
-  /* or .cm-wrap */
   max-height: 300px;
-  /* Example max height */
 }
 
 .cm-scroller {
   overflow: auto;
+}
+
+.btn-disabled {
+  @apply bg-gray-300 text-gray-500 cursor-default opacity-50;
 }

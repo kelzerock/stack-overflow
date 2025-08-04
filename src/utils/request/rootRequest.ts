@@ -5,6 +5,7 @@ import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
 import { Languages } from 'models/enums/languages';
 import { Mark } from 'models/enums/mark';
+import { ResponseGetSnippetZ } from 'schemas/responseGetSnippetZ';
 import { UserStatisticDto } from 'schemas/userStatisticDto';
 import z from 'zod';
 
@@ -104,8 +105,11 @@ class RootRequest {
   public getLanguages = (): Promise<Response> =>
     this.baseRequest({ path: API.LANG, method: Methods.GET });
 
-  public getSnippet = (id: string): Promise<Response> =>
-    this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET });
+  public getSnippet = async (id: string): Promise<z.infer<typeof ResponseGetSnippetZ>> => {
+    const response = await this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET });
+    const result = await response.json();
+    return ResponseGetSnippetZ.parse(result);
+  };
 
   public updateSnippet = (
     id: string,
@@ -133,7 +137,6 @@ class RootRequest {
   ): Promise<z.infer<typeof ResponseGetQuestionsZ>> => {
     const response = await this.baseRequest({ path: API.QUESTIONS, method: Methods.GET, query });
     const result = await response.json();
-    console.log({ questins: result });
     return ResponseGetQuestionsZ.parse(result.data);
   };
 
