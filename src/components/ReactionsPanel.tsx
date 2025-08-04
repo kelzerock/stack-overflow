@@ -49,14 +49,14 @@ export const ReactionsPanel = ({ marks, snippetId }: { marks: MarkType[]; snippe
     <div className="flex gap-3">
       <button
         disabled={isLoading}
-        className={`flex gap-1 items-center border-2 rounded-md py-1 px-3 hover:cursor-pointer hover:bg-stone-400  ${isDislikedPost ? 'bg-yellow-400 hover:bg-yellow-600' : ''} ${isLoading ? 'btn-disabled' : ''}`}
+        className={`flex gap-1 items-center rounded-md py-1 px-3 hover:cursor-pointer hover:bg-stone-300  ${isDislikedPost ? 'bg-yellow-400 hover:bg-yellow-600' : ''} ${isLoading ? 'btn-disabled' : ''}`}
         onClick={() => handleCLick(isDislikedPost ? Mark.NONE : Mark.DISLIKE)}
       >
         <AiOutlineDislike /> {dislike}
       </button>
       <button
         disabled={isLoading}
-        className={`flex gap-1 items-center border-2 rounded-md py-1 px-3 hover:cursor-pointer hover:bg-stone-400 ${isLikedPost ? 'bg-yellow-400 hover:bg-yellow-600' : ''} ${isLoading ? 'btn-disabled' : ''}`}
+        className={`flex gap-1 items-center rounded-md py-1 px-3 hover:cursor-pointer hover:bg-stone-300 ${isLikedPost ? 'bg-yellow-400 hover:bg-yellow-600' : ''} ${isLoading ? 'btn-disabled' : ''}`}
         onClick={() => handleCLick(isLikedPost ? Mark.NONE : Mark.LIKE)}
       >
         <AiOutlineLike /> {like}
