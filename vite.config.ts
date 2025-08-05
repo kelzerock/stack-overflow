@@ -8,11 +8,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/socket.io/': {
-        // Or the specific path your WebSocket server uses
-        target: 'https://codelang.vercel.app', // Your WebSocket server address
+        target: 'https://codelang.vercel.app',
         changeOrigin: true,
-        secure: false, // Set to true if your WebSocket server uses HTTPS
-        ws: true, // Crucial for WebSocket proxying
+        secure: false,
+        ws: true,
       },
       '/api': {
         target: 'https://codelang.vercel.app/',

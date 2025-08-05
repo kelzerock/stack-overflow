@@ -49,7 +49,6 @@ export const UpdateQuestion = ({
 
   useEffect(() => {
     if (editorContainerRef.current) {
-      console.log('test');
       editorViewRef.current = new EditorView({
         doc: initialQuestion.attachedCode,
         extensions: [basicSetup, javascript({ typescript: false }), EditorState.readOnly.of(false)],

@@ -31,8 +31,11 @@ export const snippetsDataSlice = createSlice({
         }),
       };
     },
-    updateSingleSnippet: (state, action: PayloadAction<z.infer<typeof ResponseGetSnippetZ>>) => {
-      return { ...state, singleSnippet: action.payload.data };
+    updateSingleSnippet: (
+      state,
+      action: PayloadAction<z.infer<typeof ResponseGetSnippetZ> | null>
+    ) => {
+      return { ...state, singleSnippet: action.payload?.data || null };
     },
     deleteSnippetsData: () => Object.assign({}, initialState),
   },

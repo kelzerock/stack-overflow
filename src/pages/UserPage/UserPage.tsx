@@ -16,10 +16,7 @@ export const UserPage = () => {
     if (profileID)
       rootRequest
         .getUserStatistic(profileID || '')
-        .then((res) => {
-          console.log('Response:', res);
-          setUser(res);
-        })
+        .then(setUser)
         .catch((err) => console.log(err));
   }, [profileID]);
 

@@ -95,7 +95,6 @@ class RootRequest {
   ): Promise<z.infer<typeof ResponseGetSnippetsZ>> => {
     const response = await this.baseRequest({ path: API.SNIPPETS, method: Methods.GET, query });
     const result = await response.json();
-    console.log({ snippets: result });
     return ResponseGetSnippetsZ.parse(result.data);
   };
 

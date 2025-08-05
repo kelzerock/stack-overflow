@@ -12,9 +12,11 @@ import { CommentLabel } from './CommentLabel';
 export const Snippet = ({
   snippet,
   isSinglePost = false,
+  updatePost,
 }: {
   snippet: z.infer<typeof SnippetZ>;
   isSinglePost?: boolean;
+  updatePost?: () => Promise<void>;
 }) => {
   const {
     id: snippetId,
@@ -54,7 +56,7 @@ export const Snippet = ({
       <div ref={editorContainerRef} className="p-3"></div>
       <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
         {!isSinglePost && <CommentLabel snippet={snippet} />}
-        <ReactionsPanel marks={marks} snippetId={snippetId} />
+        <ReactionsPanel marks={marks} snippetId={snippetId} updatePost={updatePost} />
       </div>
     </div>
   );

@@ -42,9 +42,7 @@ export const SignInPage = () => {
 
       const response = await rootRequest.login(user);
       if (response.ok) {
-        console.log({ response: response.headers.getSetCookie() });
         const data = await response.json();
-        console.log({ data });
         if (isResponseUserFull(data)) {
           pushToast({ type: 'success', message: String(data.message) });
           dispatch(setUser(data.data));

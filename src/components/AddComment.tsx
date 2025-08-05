@@ -1,10 +1,9 @@
 import { ToastContext } from '@context';
-import { useAppDispatch, useToastErrorHandler } from '@hooks';
+import { useToastErrorHandler } from '@hooks';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 import { rootRequest } from 'utils/request/rootRequest';
 import { IoCloseCircle } from 'react-icons/io5';
-import { updateSingleSnippet } from 'store/snippetsDataSlice';
 
 const style = {
   position: 'absolute',
@@ -24,29 +23,31 @@ export const AddComment = ({
   open,
   handleClose,
   snippetId,
+  updatePost,
 }: {
   open: boolean;
   handleClose: () => void;
   snippetId: string;
+  updatePost: () => Promise<void>;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [comment, setComment] = useState('');
   const { pushToast } = useContext(ToastContext);
   const handleError = useToastErrorHandler();
-  const dispatch = useAppDispatch();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (comment.trim()) {
+      setIsLoading(true);
       rootRequest
         .addComment({ snippetId: snippetId, content: comment.trim() })
-        .then((response) => {
-          if (response.ok) {
-            pushToast({ type: 'success', message: 'Your answer successfully added!' });
-            rootRequest.getSnippet(snippetId).then((res) => dispatch(updateSingleSnippet(res)));
-          }
-        })
-        .catch((error) => handleError(error))
-        .finally(() => handleClose());
+        .then(() => pushToast({ type: 'success', message: 'Your comment successfully added!' }))
+        .then(updatePost)
+        .catch(handleError)
+        .finally(() => {
+          handleClose();
+          setIsLoading(false);
+        });
     } else {
       pushToast({ type: 'warning', message: 'Please fill all fields!' });
     }
@@ -86,7 +87,13 @@ export const AddComment = ({
               className="w-full"
             />
 
-            <Button size="small" variant="contained" color="success" type="submit">
+            <Button
+              size="small"
+              variant="contained"
+              color="success"
+              type="submit"
+              loading={isLoading}
+            >
               Publish
             </Button>
           </form>

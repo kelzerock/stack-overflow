@@ -1,11 +1,10 @@
-import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
+import { useToastErrorHandler } from '@hooks';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { useToastContext } from 'context/ToastContext';
 import { useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
 import { MdPublishedWithChanges } from 'react-icons/md';
 import { CommentForOneSnippetZ } from 'schemas/commentForOneSnippetZ';
-import { updateSingleSnippet } from 'store/snippetsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
 
@@ -25,13 +24,14 @@ const style = {
 
 export const EditComment = ({
   commentInfo,
+  updatePost,
 }: {
   commentInfo: z.infer<typeof CommentForOneSnippetZ>;
+  updatePost: () => Promise<void>;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [comment, setComment] = useState(commentInfo.content);
-  const snippetId = useAppSelector((state) => state.snippetsData.singleSnippet?.id);
   const handleError = useToastErrorHandler();
-  const dispatch = useAppDispatch();
   const { pushToast } = useToastContext();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -46,17 +46,16 @@ export const EditComment = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (comment.trim()) {
+      setIsLoading(true);
       rootRequest
         .updateComment(commentInfo.id, { content: comment.trim() })
-        .then((response) => {
-          if (response.ok) {
-            pushToast({ type: 'success', message: 'Your comment successfully updated!' });
-            if (snippetId)
-              rootRequest.getSnippet(snippetId).then((res) => dispatch(updateSingleSnippet(res)));
-          }
-        })
-        .catch((error) => handleError(error))
-        .finally(() => handleClose());
+        .then(() => pushToast({ type: 'success', message: 'Your comment successfully updated!' }))
+        .then(updatePost)
+        .catch(handleError)
+        .finally(() => {
+          handleClose();
+          setIsLoading(false);
+        });
     } else {
       pushToast({ type: 'warning', message: 'Please fill all fields!' });
     }
@@ -97,7 +96,13 @@ export const EditComment = ({
                 className="w-full"
               />
 
-              <Button size="small" variant="contained" color="success" type="submit">
+              <Button
+                size="small"
+                variant="contained"
+                color="success"
+                type="submit"
+                loading={isLoading}
+              >
                 Publish
               </Button>
             </form>

@@ -10,7 +10,15 @@ import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
 
 type MarkType = z.infer<typeof MarkZ>;
-export const ReactionsPanel = ({ marks, snippetId }: { marks: MarkType[]; snippetId: string }) => {
+export const ReactionsPanel = ({
+  marks,
+  snippetId,
+  updatePost,
+}: {
+  marks: MarkType[];
+  snippetId: string;
+  updatePost?: () => Promise<void>;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const { pushToast } = useToastContext();
   const dispatch = useAppDispatch();
@@ -28,11 +36,14 @@ export const ReactionsPanel = ({ marks, snippetId }: { marks: MarkType[]; snippe
   const handleCLick = async (reaction: Mark) => {
     try {
       setIsLoading(true);
-      const response = await rootRequest.markSnippet(snippetId, { mark: reaction });
-      if (response.ok) {
-        const newSnippet = await rootRequest.getSnippet(snippetId);
-        dispatch(updateSnippetData(newSnippet));
-        pushToast({ type: 'success', message: 'Your reaction sended!' });
+      if (updatePost) {
+        const response = await rootRequest.markSnippet(snippetId, { mark: reaction });
+        if (response.ok) {
+          const newSnippet = await rootRequest.getSnippet(snippetId);
+          dispatch(updateSnippetData(newSnippet));
+          pushToast({ type: 'success', message: 'Your reaction sended!' });
+          await updatePost();
+        }
       }
     } catch (error) {
       handleError(error);

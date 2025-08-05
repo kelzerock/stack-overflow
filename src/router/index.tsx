@@ -15,6 +15,7 @@ import { QuestionsPage } from 'pages/QuestionsPage/QuestionsPage';
 import { UserPage } from 'pages/UserPage/UserPage';
 import { UsersPage } from 'pages/Users/UsersPage';
 import { createBrowserRouter } from 'react-router';
+import { fetchSinglePost } from './loaders/fetchSinglePost';
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
           {
             path: `${UrlPath.POST}/:postID`,
             Component: PostPage,
+            loader: async ({ params }) => fetchSinglePost(params),
           },
           {
             path: UrlPath.REGISTRATION,
