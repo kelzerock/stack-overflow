@@ -1,5 +1,5 @@
 import { Methods } from '@enums';
-import { ResponseGetQuestionsZ, ResponseGetSnippetsZ, ResponseGetUsers } from '@schemas';
+import { ResponseGetQuestionsZ, ResponseGetSnippetsZ, ResponseGetUsers, UserFullZ } from '@schemas';
 import { User, UserFull } from '@types';
 import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
@@ -45,8 +45,11 @@ class RootRequest {
     return response;
   };
 
-  public authGet = (): Promise<Response> =>
-    this.baseRequest({ path: API.AUTH, method: Methods.GET });
+  public authGet = async (): Promise<z.infer<typeof UserFullZ>> => {
+    const response = await this.baseRequest({ path: API.AUTH, method: Methods.GET });
+    const result = await response.json();
+    return UserFullZ.parse(result.data);
+  };
 
   public login = (user: User): Promise<Response> =>
     this.baseRequest({ path: API.LOGIN, method: Methods.POST, body: user });

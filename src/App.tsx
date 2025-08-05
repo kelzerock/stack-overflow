@@ -1,30 +1,23 @@
 import { Header } from '@components';
 import { Box, Container } from '@mui/material';
-import { isFullUserData } from '@utils';
+import { UserFullZ } from '@schemas';
 import { Footer } from 'components/Footer';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Outlet } from 'react-router';
+import { Outlet, useLoaderData } from 'react-router';
 import { AppDispatch } from 'store/store';
 import { deleteUser, setUser } from 'store/userSlice';
-import { rootRequest } from 'utils/request/rootRequest';
+import z from 'zod';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-
+  const userFull = useLoaderData<null | z.infer<typeof UserFullZ>>();
   useEffect(() => {
-    async function initialApp() {
-      const response = await rootRequest.authGet();
-      if (response.ok) {
-        const data = await response.json();
-        if (isFullUserData(data)) {
-          dispatch(setUser(data.data));
-        } else {
-          dispatch(deleteUser());
-        }
-      }
+    if (userFull) {
+      dispatch(setUser(userFull));
+    } else {
+      dispatch(deleteUser());
     }
-    initialApp();
   }, []);
 
   return (

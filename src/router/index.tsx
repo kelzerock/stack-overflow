@@ -16,10 +16,13 @@ import { UserPage } from 'pages/UserPage/UserPage';
 import { UsersPage } from 'pages/Users/UsersPage';
 import { createBrowserRouter } from 'react-router';
 import { fetchSinglePost } from './loaders/fetchSinglePost';
+import { fetchMyPosts } from './loaders/fetchMyPosts';
+import { rootLoader } from './loaders/rootLoader';
 
 export const router = createBrowserRouter([
   {
     Component: App,
+    loader: rootLoader,
     children: [
       {
         errorElement: <ErrorPage />,
@@ -47,7 +50,7 @@ export const router = createBrowserRouter([
           },
           { path: UrlPath.ABOUT, Component: AboutPage },
           { path: UrlPath.USERS, Component: UsersPage },
-          { path: UrlPath.MY_POSTS, Component: MyPostPage },
+          { path: UrlPath.MY_POSTS, Component: MyPostPage, loader: async () => fetchMyPosts() },
           { path: `${UrlPath.USERS}/:profileID`, Component: UserPage },
           { path: UrlPath.ACCOUNT, Component: AccountPage },
           { path: UrlPath.QUESTIONS, Component: QuestionsPage },

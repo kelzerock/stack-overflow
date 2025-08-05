@@ -1,17 +1,25 @@
+import { UrlPath } from '@enums';
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Typography } from '@mui/material';
+import { ResponseGetSnippetsZ } from '@schemas';
 import { PaginationBlock } from 'components/PaginationBlock';
 import { Snippet } from 'components/Snippet';
 import { useEffect, useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router';
 import { setSnippetsData } from 'store/snippetsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
 
 export const MyPostPage = () => {
+  const navigate = useNavigate();
+  const loadedPosts = useLoaderData<null | z.infer<typeof ResponseGetSnippetsZ>>();
+  console.log({ loadedPosts });
   const snippetsData = useAppSelector((state) => state.snippetsData);
   const { data } = snippetsData;
 
   const [isLoading, setIsLoading] = useState(false);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
+  console.log({ isAuth });
   const pagination = useAppSelector((state) => state.snippetsData.links);
   const meta = useAppSelector((state) => state.snippetsData.meta);
   const dispatch = useAppDispatch();
@@ -31,17 +39,10 @@ export const MyPostPage = () => {
   };
 
   useEffect(() => {
-    if (!snippetsData.meta?.currentPage)
-      rootRequest
-        .getSnippets()
-        .then((result) => dispatch(setSnippetsData(result)))
-        .catch((error) => {
-          if (error instanceof z.ZodError) {
-            console.log('Cannot parse data:', error.message);
-          } else {
-            throw Error('unexpected error, while get users');
-          }
-        });
+    if (!isAuth) navigate(UrlPath.HOME);
+    if (loadedPosts) {
+      dispatch(setSnippetsData(loadedPosts));
+    }
   }, []);
 
   return (
