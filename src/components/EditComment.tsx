@@ -5,22 +5,9 @@ import { useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
 import { MdPublishedWithChanges } from 'react-icons/md';
 import { CommentForOneSnippetZ } from 'schemas/commentForOneSnippetZ';
+import { modalStyle } from 'utils/modalStyle';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: { xs: '100%', sm: '90%', md: '600px' },
-  height: { xs: '100vh', sm: '80vh' },
-  maxHeight: { xs: '100vh', sm: '500px' },
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 export const EditComment = ({
   commentInfo,
@@ -76,7 +63,7 @@ export const EditComment = ({
         aria-describedby="modal-modal-description"
         keepMounted
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <IoCloseCircle
             className="absolute top-1 right-1 text-stone-500 hover:cursor-pointer hover:scale-105 transition-transform duration-300"
             size="3em"

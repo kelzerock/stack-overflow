@@ -10,20 +10,7 @@ import { basicSetup } from 'codemirror';
 import { EditorView } from '@codemirror/view';
 import { javascript } from '@codemirror/lang-javascript';
 import { EditorState } from '@codemirror/state';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: { xs: '100%', sm: '90%', md: '600px' },
-  height: { xs: '100vh', sm: '80vh' },
-  maxHeight: { xs: '100vh', sm: '500px' },
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+import { modalStyle } from 'utils/modalStyle';
 
 type InitialData = { title: string; description: string; attachedCode: string };
 
@@ -101,7 +88,7 @@ export const UpdateQuestion = ({
       aria-describedby="modal-modal-description"
       keepMounted
     >
-      <Box sx={style}>
+      <Box sx={modalStyle}>
         <IoCloseCircle
           className="absolute top-1 right-1 text-stone-500 hover:cursor-pointer hover:scale-105 transition-transform duration-300"
           size="3em"
