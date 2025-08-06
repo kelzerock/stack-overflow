@@ -1,24 +1,21 @@
 import { UrlPath } from '@enums';
 import {
   AboutPage,
+  AccountPage,
   ErrorPage,
   HomePage,
+  MyPostPage,
   PostPage,
   PostStub,
+  QuestionsPage,
   RegistrationPage,
   SignInPage,
+  UserPage,
+  UsersPage,
 } from '@pages';
 import App from 'App';
-import { AccountPage } from 'pages/AccountPage/AccountPage';
-import { MyPostPage } from 'pages/MYPostPage/MyPostPage';
-import { QuestionsPage } from 'pages/QuestionsPage/QuestionsPage';
-import { UserPage } from 'pages/UserPage/UserPage';
-import { UsersPage } from 'pages/Users/UsersPage';
 import { createBrowserRouter } from 'react-router';
-import { fetchSinglePost } from './loaders/fetchSinglePost';
-import { fetchMyPosts } from './loaders/fetchMyPosts';
-import { rootLoader } from './loaders/rootLoader';
-import { fetchAllPosts } from './loaders/fetchAllPosts';
+import { fetchAllPosts, fetchMyPosts, fetchSinglePost, rootLoader } from './loaders';
 
 export const router = createBrowserRouter([
   {

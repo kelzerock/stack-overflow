@@ -5,3 +5,8 @@ export { AboutPage } from './AboutPage/AboutPage';
 export { HomePage } from './HomePage/HomePage';
 export { RegistrationPage } from './RegistrationPage/RegistrationPage';
 export { SignInPage } from './SignInPage/SignInPage';
+export { AccountPage } from './AccountPage/AccountPage';
+export { MyPostPage } from './MYPostPage/MyPostPage';
+export { QuestionsPage } from './QuestionsPage/QuestionsPage';
+export { UserPage } from './UserPage/UserPage';
+export { UsersPage } from './Users/UsersPage';
