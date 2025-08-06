@@ -1,14 +1,23 @@
 import { useToastErrorHandler } from '@hooks';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Tooltip, Typography } from '@mui/material';
 import { useToastContext } from 'context/ToastContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoCloseCircle } from 'react-icons/io5';
 import { modalStyle } from 'utils/modalStyle';
 import { rootRequest } from 'utils/request/rootRequest';
 import { SelectLanguage } from './SelectLanguage';
 import { CodeEditor } from './CodeEditor';
+import { MdPublishedWithChanges } from 'react-icons/md';
+import z from 'zod';
+import { SnippetZ } from '@schemas';
 
-export const AddSnippet = ({ updatePost }: { updatePost: () => Promise<void> }) => {
+export const EditSnippet = ({
+  updatePost,
+  snippet,
+}: {
+  updatePost: () => Promise<void>;
+  snippet: z.infer<typeof SnippetZ>;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState('');
   const [code, setCode] = useState('');
@@ -18,23 +27,26 @@ export const AddSnippet = ({ updatePost }: { updatePost: () => Promise<void> }) 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  useEffect(() => {
+    setCode(snippet.code);
+    setLanguage(snippet.language);
+  }, [snippet.code, snippet.language]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log({ language, code });
     setIsLoading(true);
     if (language && code.trim()) {
-      console.log({ language, code });
       rootRequest
-        .addSnippets({ code, language })
+        .updateSnippet(snippet.id, { code, language })
         .then(() => {
-          pushToast({ type: 'success', message: 'Snippet successfully added!' });
-          setCode('');
-          setLanguage('');
+          pushToast({ type: 'success', message: 'Snippet successfully updated!' });
         })
         .then(updatePost)
         .catch(handleError)
         .finally(() => {
-          setIsLoading(false);
           handleClose();
+          setIsLoading(false);
         });
     } else {
       pushToast({ type: 'warning', message: 'Please fill all fields!' });
@@ -42,9 +54,15 @@ export const AddSnippet = ({ updatePost }: { updatePost: () => Promise<void> }) 
   };
   return (
     <>
-      <Button onClick={handleOpen} size="small" variant="contained" color="success">
-        Create snippet
-      </Button>
+      <Tooltip title="Update snippet">
+        <button
+          onClick={handleOpen}
+          className="p-2 
+        bg-stone-300 hover:cursor-pointer hover:bg-stone-400 text-emerald-500 hover:text-emerald-600 transition-colors duration-300 self-start rounded-md"
+        >
+          <MdPublishedWithChanges size={30} className=" hover:scale-110" />
+        </button>
+      </Tooltip>
       <Modal
         open={open}
         onClose={handleClose}
@@ -64,7 +82,7 @@ export const AddSnippet = ({ updatePost }: { updatePost: () => Promise<void> }) 
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1 add-snippet">
               <SelectLanguage language={language} setLanguage={setLanguage} />
-              <CodeEditor key={open ? 'open' : 'closed'} code={code} updateCode={setCode} />
+              <CodeEditor code={code} updateCode={setCode} />
               <Button
                 size="small"
                 variant="contained"

@@ -3,7 +3,6 @@ import { ResponseGetQuestionsZ, ResponseGetSnippetsZ, ResponseGetUsers, UserFull
 import { User, UserFull } from '@types';
 import { LINK_TO_SERVER } from 'constants/global-constant';
 import { API } from 'models/enums/api';
-import { Languages } from 'models/enums/languages';
 import { Mark } from 'models/enums/mark';
 import { ResponseGetSnippetZ } from 'schemas/responseGetSnippetZ';
 import { UserStatisticDto } from 'schemas/userStatisticDto';
@@ -118,9 +117,9 @@ class RootRequest {
 
   public updateSnippet = (
     id: string,
-    body: { code: string; language: Languages }
+    body: { code: string; language: string }
   ): Promise<Response> =>
-    this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET, body });
+    this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.PATCH, body });
 
   public deleteSnippet = (id: string): Promise<Response> =>
     this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.DELETE });

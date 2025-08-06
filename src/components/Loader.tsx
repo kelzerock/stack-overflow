@@ -11,7 +11,7 @@ export const Loader = () => {
         alignItems: 'center',
       }}
     >
-      <CircularProgress size="30%" />
+      <CircularProgress className="w-2/5" />
     </Box>
   );
 };

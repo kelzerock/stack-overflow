@@ -43,7 +43,7 @@ export const SelectLanguage = ({
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={language}
+          value={languages.includes(language) ? language : ''}
           label="Language"
           onChange={(e) => handleChange(e)}
         >
