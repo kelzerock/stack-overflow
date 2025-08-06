@@ -11,7 +11,6 @@ import z from 'zod';
 
 export const HomePage = () => {
   const loadedPosts = useLoaderData<z.infer<typeof ResponseGetSnippetsZ>>();
-  console.log({ allPosts: loadedPosts });
   const snippetsData = useAppSelector((state) => state.snippetsData);
   const { data } = snippetsData;
 
@@ -42,9 +41,9 @@ export const HomePage = () => {
 
   const handleClick = async () => {
     try {
-      const res = await rootRequest.getAnswers();
-      const res1 = await res.json();
-      console.log({ res1 });
+      const res = await rootRequest.getLanguages();
+      // const res1 = await res.json();
+      console.log({ res });
     } catch (error) {
       errorHandler(error);
     }

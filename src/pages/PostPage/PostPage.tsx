@@ -1,5 +1,4 @@
 import { AddComment, CommentList, Snippet } from '@components';
-import { UrlPath } from '@enums';
 import { useAppSelector } from '@hooks';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -54,9 +53,9 @@ export const PostPage = () => {
       <h1 className=" font-bold text-2xl">Snippet from user: {username}</h1>
       <button
         className="p-2 rounded-md bg-stone-300 hover:cursor-pointer hover:bg-stone-400 self-start"
-        onClick={() => navigate(UrlPath.HOME)}
+        onClick={() => navigate(-1)}
       >
-        View All Snippets
+        Go back
       </button>
       <Snippet snippet={snippet} isSinglePost={true} updatePost={updatePost} />
       <Button

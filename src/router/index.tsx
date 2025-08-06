@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
           },
           { path: UrlPath.ABOUT, Component: AboutPage },
           { path: UrlPath.USERS, Component: UsersPage },
-          { path: UrlPath.MY_POSTS, Component: MyPostPage, loader: async () => fetchMyPosts() },
+          { path: UrlPath.MY_POSTS, Component: MyPostPage, loader: fetchMyPosts },
           { path: `${UrlPath.USERS}/:profileID`, Component: UserPage },
           { path: UrlPath.ACCOUNT, Component: AccountPage },
           { path: UrlPath.QUESTIONS, Component: QuestionsPage },

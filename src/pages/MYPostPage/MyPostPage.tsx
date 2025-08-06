@@ -2,6 +2,8 @@ import { UrlPath } from '@enums';
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Typography } from '@mui/material';
 import { ResponseGetSnippetsZ } from '@schemas';
+import { getURLSearchParams } from '@utils';
+import { AddSnippet } from 'components/AddSnippet';
 import { PaginationBlock } from 'components/PaginationBlock';
 import { Snippet } from 'components/Snippet';
 import { useEffect, useState } from 'react';
@@ -17,11 +19,12 @@ export const MyPostPage = () => {
   const { data } = snippetsData;
 
   const [isLoading, setIsLoading] = useState(false);
-  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const userAuth = useAppSelector((state) => state.user);
   const pagination = useAppSelector((state) => state.snippetsData.links);
   const meta = useAppSelector((state) => state.snippetsData.meta);
   const dispatch = useAppDispatch();
   const errorHandler = useToastErrorHandler();
+  console.log({ pagination });
 
   const loadPage = async (url: string) => {
     setIsLoading(true);
@@ -36,8 +39,22 @@ export const MyPostPage = () => {
     }
   };
 
+  const updateData = async () => {
+    if (pagination?.current) {
+      const searchParams = new URLSearchParams();
+      searchParams.set('userId', userAuth.user.id);
+      const query = getURLSearchParams(pagination.current);
+      const mergedString = searchParams.toString() + '&' + query.toString();
+      const mergedParams = new URLSearchParams(mergedString);
+      rootRequest
+        .getSnippets(mergedParams)
+        .then((res) => dispatch(setSnippetsData(res)))
+        .catch(errorHandler);
+    }
+  };
+
   useEffect(() => {
-    if (!isAuth) navigate(UrlPath.HOME);
+    if (!userAuth.isAuth) navigate(UrlPath.HOME);
     if (loadedPosts) {
       dispatch(setSnippetsData(loadedPosts));
     }
@@ -60,8 +77,12 @@ export const MyPostPage = () => {
           loadPage={loadPage}
         />
         <div className="flex flex-col gap-0.5 p-2 w-full">
+          <AddSnippet updatePost={updateData} />
           {data.length === 0 && <h2>Snippets absent</h2>}
-          {data.length > 0 && data.map((snippet) => <Snippet key={snippet.id} snippet={snippet} />)}
+          {data.length > 0 &&
+            data.map((snippet) => (
+              <Snippet key={snippet.id} snippet={snippet} updatePost={updateData} />
+            ))}
         </div>
       </div>
     </div>

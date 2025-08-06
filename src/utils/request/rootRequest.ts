@@ -101,11 +101,14 @@ class RootRequest {
     return ResponseGetSnippetsZ.parse(result.data);
   };
 
-  public addSnippets = (body: { code: string; language: Languages }): Promise<Response> =>
+  public addSnippets = (body: { code: string; language: string }): Promise<Response> =>
     this.baseRequest({ path: API.SNIPPETS, method: Methods.POST, body });
 
-  public getLanguages = (): Promise<Response> =>
-    this.baseRequest({ path: API.LANG, method: Methods.GET });
+  public getLanguages = async (): Promise<string[]> => {
+    const response = await this.baseRequest({ path: API.LANG, method: Methods.GET });
+    const result = await response.json();
+    return z.array(z.string()).parse(result.data);
+  };
 
   public getSnippet = async (id: string): Promise<z.infer<typeof ResponseGetSnippetZ>> => {
     const response = await this.baseRequest({ path: `${API.SNIPPETS}/${id}`, method: Methods.GET });

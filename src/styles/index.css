@@ -10,6 +10,13 @@ body,
   max-height: 300px;
 }
 
+.add-snippet {
+
+  .cm-editor {
+    height: 250px;
+  }
+}
+
 .cm-scroller {
   overflow: auto;
 }
