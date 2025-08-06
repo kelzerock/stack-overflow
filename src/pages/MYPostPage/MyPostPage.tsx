@@ -13,13 +13,11 @@ import z from 'zod';
 export const MyPostPage = () => {
   const navigate = useNavigate();
   const loadedPosts = useLoaderData<null | z.infer<typeof ResponseGetSnippetsZ>>();
-  console.log({ loadedPosts });
   const snippetsData = useAppSelector((state) => state.snippetsData);
   const { data } = snippetsData;
 
   const [isLoading, setIsLoading] = useState(false);
   const isAuth = useAppSelector((state) => state.user.isAuth);
-  console.log({ isAuth });
   const pagination = useAppSelector((state) => state.snippetsData.links);
   const meta = useAppSelector((state) => state.snippetsData.meta);
   const dispatch = useAppDispatch();

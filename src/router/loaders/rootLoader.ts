@@ -5,10 +5,8 @@ let wasInitialized = false;
 
 export const rootLoader = async () => {
   if (wasInitialized) {
-    console.log('stop');
     return null;
   }
-  console.log('next');
   wasInitialized = true;
 
   const state = store.getState();

@@ -18,6 +18,7 @@ import { createBrowserRouter } from 'react-router';
 import { fetchSinglePost } from './loaders/fetchSinglePost';
 import { fetchMyPosts } from './loaders/fetchMyPosts';
 import { rootLoader } from './loaders/rootLoader';
+import { fetchAllPosts } from './loaders/fetchAllPosts';
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
           {
             path: UrlPath.HOME,
             Component: HomePage,
+            loader: fetchAllPosts,
           },
           {
             path: UrlPath.POST,
