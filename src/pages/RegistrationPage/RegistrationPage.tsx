@@ -95,7 +95,7 @@ export const RegistrationPage = () => {
         type="password"
         label="Confirm Password"
         disabled={isSubmitting}
-        value={registrationFormData.password}
+        value={registrationFormData.confirmPassword}
         onChange={(event) => {
           handleChange(event, 'confirmPassword');
         }}

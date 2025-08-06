@@ -8,6 +8,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { EditorState } from '@codemirror/state';
 import { ReactionsPanel } from './ReactionsPanel';
 import { CommentLabel } from './CommentLabel';
+import { useAppSelector } from '@hooks';
 
 export const Snippet = ({
   snippet,
@@ -21,10 +22,13 @@ export const Snippet = ({
   const {
     id: snippetId,
     language,
-    user: { username },
+    user: { username, id: userId },
     code,
     marks,
   } = snippet;
+  const authUserId = useAppSelector((state) => state.user.user.id);
+  const isMySnippet = userId === authUserId;
+
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const editorViewRef = useRef<EditorView | null>(null);
 
@@ -46,8 +50,8 @@ export const Snippet = ({
   return (
     <div className="bg-stone-300 flex flex-col gap-3 rounded-sm">
       <div className="flex justify-between p-3 bg-stone-100 border-4 border-stone-300">
-        <span className="flex gap-1 items-center">
-          <FaUserTie /> {username}
+        <span className="flex gap-1 items-center bg-stone-300 p-1 rounded-sm">
+          <FaUserTie className={`${isMySnippet ? 'text-yellow-600' : ''}`} /> {username}
         </span>
         <span className="flex gap-1 items-center">
           <DiCodeBadge /> {language}
