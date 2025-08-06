@@ -21,28 +21,26 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Container
-        component="div"
-        maxWidth="xl"
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: 1,
-          bgcolor: 'background.paper',
-          borderRadius: 1,
-          gap: 3,
-        }}
-        disableGutters
-      >
-        <Header />
-        <Box sx={{ flexGrow: '1', paddingInline: 2 }} component="main">
-          <Outlet />
-        </Box>
-        <Footer />
-      </Container>
-    </>
+    <Container
+      component="div"
+      maxWidth="xl"
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: 1,
+        bgcolor: 'background.paper',
+        borderRadius: 1,
+        gap: 3,
+      }}
+      disableGutters
+    >
+      <Header />
+      <Box sx={{ flexGrow: '1', paddingInline: 2 }} component="main">
+        <Outlet />
+      </Box>
+      <Footer />
+    </Container>
   );
 }
 

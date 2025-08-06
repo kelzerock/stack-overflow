@@ -16,11 +16,13 @@ import {
 import App from 'App';
 import { createBrowserRouter } from 'react-router';
 import { fetchAllPosts, fetchMyPosts, fetchSinglePost, rootLoader } from './loaders';
+import { Loader } from 'components/Loader';
 
 export const router = createBrowserRouter([
   {
     Component: App,
     loader: rootLoader,
+    hydrateFallbackElement: <Loader />,
     children: [
       {
         errorElement: <ErrorPage />,

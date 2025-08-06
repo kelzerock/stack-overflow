@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { ResponseGetSnippetsZ } from '@schemas';
 import { getURLSearchParams } from '@utils';
 import { AddSnippet } from 'components/AddSnippet';
@@ -51,23 +51,8 @@ export const HomePage = () => {
     }
   }, []);
 
-  const handleClick = async () => {
-    try {
-      const res = await rootRequest.getLanguages();
-      // const res1 = await res.json();
-      console.log({ res });
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
   return (
     <div>
-      <h1>HomePage</h1>
-      <Button variant="outlined" onClick={handleClick}>
-        Click
-      </Button>
-
       <div className="flex flex-col gap-2 items-center">
         <Typography
           component="h1"
