@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+.cm-editor {
+  max-height: 300px;
+}
+
+.add-snippet {
+
+  .cm-editor {
+    height: 250px;
+  }
+}
+
+.cm-scroller {
+  overflow: auto;
+}
+
+.btn-disabled {
+  @apply bg-gray-300 text-gray-500 cursor-default opacity-50;
+}
