@@ -17,6 +17,7 @@ import App from 'App';
 import { createBrowserRouter } from 'react-router';
 import { fetchAllPosts, fetchMyPosts, fetchSinglePost, rootLoader } from './loaders';
 import { Loader } from 'components/Loader';
+import { fetchAllUsers } from './loaders/fetchAllUsers';
 
 export const router = createBrowserRouter([
   {
@@ -50,7 +51,12 @@ export const router = createBrowserRouter([
             Component: SignInPage,
           },
           { path: UrlPath.ABOUT, Component: AboutPage },
-          { path: UrlPath.USERS, Component: UsersPage },
+          {
+            path: UrlPath.USERS,
+            Component: UsersPage,
+            loader: fetchAllUsers,
+            hydrateFallbackElement: <Loader />,
+          },
           { path: UrlPath.MY_POSTS, Component: MyPostPage, loader: fetchMyPosts },
           { path: `${UrlPath.USERS}/:profileID`, Component: UserPage },
           { path: UrlPath.ACCOUNT, Component: AccountPage },

@@ -6,8 +6,12 @@ import { useEffect, useState } from 'react';
 import { setUsersData } from 'store/usersDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
+import { useLoaderData } from 'react-router';
+import { ResponseGetUsers } from '@schemas';
 
 export const UsersPage = () => {
+  const loadedUsers = useLoaderData<z.infer<typeof ResponseGetUsers>>();
+  console.log({ loadedUsers });
   const usersData = useAppSelector((state) => state.usersData);
   const { data } = usersData;
 
@@ -31,17 +35,7 @@ export const UsersPage = () => {
   };
 
   useEffect(() => {
-    if (!usersData.meta?.currentPage)
-      rootRequest
-        .getUsers()
-        .then((result) => dispatch(setUsersData(result)))
-        .catch((error) => {
-          if (error instanceof z.ZodError) {
-            console.log('Cannot parse data:', error.message);
-          } else {
-            throw Error('unexpected error, while get users');
-          }
-        });
+    if (loadedUsers) dispatch(setUsersData(loadedUsers));
   }, []);
 
   return (
