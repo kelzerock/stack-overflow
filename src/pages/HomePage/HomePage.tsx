@@ -13,12 +13,13 @@ import z from 'zod';
 
 export const HomePage = () => {
   const loadedPosts = useLoaderData<z.infer<typeof ResponseGetSnippetsZ>>();
-  const snippetsData = useAppSelector((state) => state.snippetsData);
-  const { data } = snippetsData;
 
   const [isLoading, setIsLoading] = useState(false);
+  const snippetsData = useAppSelector((state) => state.snippetsData);
   const pagination = useAppSelector((state) => state.snippetsData.links);
   const meta = useAppSelector((state) => state.snippetsData.meta);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const { data } = snippetsData;
   const dispatch = useAppDispatch();
   const errorHandler = useToastErrorHandler();
 
@@ -68,7 +69,7 @@ export const HomePage = () => {
           loadPage={loadPage}
         />
         <div className="flex flex-col gap-0.5 p-2 w-full">
-          <AddSnippet updatePost={updateData} />
+          {isAuth && <AddSnippet updatePost={updateData} />}
           {data.length === 0 && <h2>Snippets absent</h2>}
           {data.length > 0 &&
             data.map((snippet) => (

@@ -19,6 +19,7 @@ export const ReactionsPanel = ({
   snippetId: string;
   updatePost?: () => Promise<void>;
 }) => {
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   const [isLoading, setIsLoading] = useState(false);
   const { pushToast } = useToastContext();
   const dispatch = useAppDispatch();
@@ -57,7 +58,7 @@ export const ReactionsPanel = ({
   const isLikedPost = userReaction?.type === 'like';
   const isDislikedPost = userReaction?.type === 'dislike';
   return (
-    <div className="flex gap-3">
+    <div className={`flex gap-3 ${isAuth ? '' : 'pointer-events-none'}`}>
       <button
         disabled={isLoading}
         className={`flex gap-1 items-center rounded-md py-1 px-3 hover:cursor-pointer hover:bg-stone-300  ${isDislikedPost ? 'bg-yellow-400 hover:bg-yellow-600' : ''} ${isLoading ? 'btn-disabled' : ''}`}

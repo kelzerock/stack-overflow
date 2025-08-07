@@ -13,6 +13,7 @@ export const PostPage = () => {
   const loadedSnippet = useLoaderData<z.infer<typeof ResponseGetSnippetZ> | null>();
   const dispatch = useDispatch();
   const snippet = useAppSelector((state) => state.snippetsData.singleSnippet);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   const [openComment, setOpenComment] = useState(false);
   const handleOpenComment = () => setOpenComment(true);
   const handleCloseComment = () => setOpenComment(false);
@@ -58,15 +59,17 @@ export const PostPage = () => {
         Go back
       </button>
       <Snippet snippet={snippet} isSinglePost={true} updatePost={updatePost} />
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className="self-start"
-        onClick={handleOpenComment}
-      >
-        Add comment
-      </Button>
+      {isAuth && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className="self-start"
+          onClick={handleOpenComment}
+        >
+          Add comment
+        </Button>
+      )}
       {openComment && (
         <AddComment
           snippetId={id}

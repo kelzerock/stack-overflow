@@ -18,6 +18,7 @@ export const QuestionsPage = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   const pagination = useAppSelector((state) => state.questionsData.links);
   const meta = useAppSelector((state) => state.questionsData.meta);
   const dispatch = useAppDispatch();
@@ -54,10 +55,14 @@ export const QuestionsPage = () => {
       <Typography component="h1" sx={{ fontSize: 32, textTransform: 'uppercase', fontWeight: 500 }}>
         Questions from users
       </Typography>
-      <Button size="small" variant="contained" color="success" onClick={handleOpen}>
-        Create question
-      </Button>
-      <CreateQuestion open={open} handleClose={handleClose} />
+      {isAuth && (
+        <>
+          <Button size="small" variant="contained" color="success" onClick={handleOpen}>
+            Create question
+          </Button>
+          <CreateQuestion open={open} handleClose={handleClose} />
+        </>
+      )}
       <PaginationBlock
         pagination={pagination}
         title="questions"

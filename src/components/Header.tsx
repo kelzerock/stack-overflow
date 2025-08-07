@@ -51,13 +51,13 @@ export const Header = () => {
   };
 
   const pages = [
-    { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false },
-    { name: 'Log in', path: UrlPath.SIGN_IN, viewForAuth: false },
-    { name: 'main', path: UrlPath.HOME, viewForAuth: true },
-    { name: 'users', path: UrlPath.USERS, viewForAuth: true },
-    { name: 'about', path: UrlPath.ABOUT, viewForAuth: true },
-    { name: 'questions', path: UrlPath.QUESTIONS, viewForAuth: true },
-    { name: 'my posts', path: UrlPath.MY_POSTS, viewForAuth: true },
+    { name: 'Registration', path: UrlPath.REGISTRATION, viewForAuth: false, viewForUnAuth: true },
+    { name: 'Log in', path: UrlPath.SIGN_IN, viewForAuth: false, viewForUnAuth: true },
+    { name: 'main', path: UrlPath.HOME, viewForAuth: true, viewForUnAuth: true },
+    { name: 'users', path: UrlPath.USERS, viewForAuth: true, viewForUnAuth: true },
+    { name: 'about', path: UrlPath.ABOUT, viewForAuth: true, viewForUnAuth: true },
+    { name: 'questions', path: UrlPath.QUESTIONS, viewForAuth: true, viewForUnAuth: true },
+    { name: 'my posts', path: UrlPath.MY_POSTS, viewForAuth: true, viewForUnAuth: false },
   ];
 
   const settings = [
@@ -130,7 +130,7 @@ export const Header = () => {
                     </MenuItem>
                   );
                 } else {
-                  if (!isAuth) {
+                  if (!isAuth && page.viewForUnAuth) {
                     return (
                       <MenuItem key={page.name} onClick={() => handleCloseNavMenu(page.path)}>
                         <Typography component={NavLink} to={page.path} sx={{ textAlign: 'center' }}>
@@ -177,7 +177,7 @@ export const Header = () => {
                   </Typography>
                 );
               } else {
-                if (!isAuth)
+                if (!isAuth && page.viewForUnAuth)
                   return (
                     <Typography
                       component={NavLink}

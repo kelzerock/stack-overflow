@@ -22,7 +22,9 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
   const handleOpenAnswer = () => setOpenAnswer(true);
   const handleCloseAnswer = () => setOpenAnswer(false);
   const handleError = useToastErrorHandler();
-  const userAuth = useAppSelector((state) => state.user.user);
+
+  const userData = useAppSelector((state) => state.user);
+  const { isAuth, user: userAuth } = userData;
   const links = useAppSelector((state) => state.questionsData.links);
   const dispatch = useAppDispatch();
 
@@ -130,10 +132,14 @@ export const QuestionPost = ({ question }: { question: z.infer<typeof QuestionZ>
           />
         </>
       )}
-      <Button variant="contained" size="small" color="success" onClick={handleOpenAnswer}>
-        Send answer
-      </Button>
-      <AddAnswer open={openAnswer} handleClose={handleCloseAnswer} idQuestion={idQuestion} />
+      {isAuth && (
+        <>
+          <Button variant="contained" size="small" color="success" onClick={handleOpenAnswer}>
+            Send answer
+          </Button>
+          <AddAnswer open={openAnswer} handleClose={handleCloseAnswer} idQuestion={idQuestion} />
+        </>
+      )}
       {answers.length === 0 ? noAnswer : answersBlock}
     </div>
   );
