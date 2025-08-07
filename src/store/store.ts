@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './userSlice';
+import loaderReducer from './loaderSlice';
 import usersDataReducer from './usersDataSlice';
 import snippetsDataReducer from './snippetsDataSlice';
 import questionsDataReducer from './questionsDataSlice';
+import userReducer from './userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     usersData: usersDataReducer,
     snippetsData: snippetsDataReducer,
     questionsData: questionsDataReducer,
+    loader: loaderReducer,
   },
 });
 

@@ -1,5 +1,7 @@
+import { useAppDispatch } from '@hooks';
 import { Button, ButtonGroup, Typography } from '@mui/material';
 import { PageLinksZ, PaginationMetadataZ } from '@schemas';
+import { setLoader } from 'store/loaderSlice';
 import z from 'zod';
 
 export const PaginationBlock = ({
@@ -15,20 +17,27 @@ export const PaginationBlock = ({
   meta: z.infer<typeof PaginationMetadataZ> | null;
   title: string;
 }) => {
+  const dispatch = useAppDispatch();
+
+  const handleLoad = (url: string | undefined) => {
+    dispatch(setLoader(true));
+    loadPage(url || '').finally(() => dispatch(setLoader(false)));
+  };
+
   return (
     <div className="w-full sm:w-5/6 bg-stone-100 rounded-md p-2 gap-1 flex-col flex items-center">
       <ButtonGroup variant="contained" size="small" aria-label="Basic button group">
         <Button
           disabled={!pagination?.first}
           loading={isLoading}
-          onClick={() => loadPage(pagination?.first || '')}
+          onClick={() => handleLoad(pagination?.first)}
         >
           First
         </Button>
         <Button
           disabled={!pagination?.previous}
           loading={isLoading}
-          onClick={() => loadPage(pagination?.previous || '')}
+          onClick={() => handleLoad(pagination?.previous)}
         >
           Prev
         </Button>
@@ -44,14 +53,14 @@ export const PaginationBlock = ({
         <Button
           disabled={!pagination?.next}
           loading={isLoading}
-          onClick={() => loadPage(pagination?.next || '')}
+          onClick={() => handleLoad(pagination?.next)}
         >
           Next
         </Button>
         <Button
           disabled={!pagination?.last}
           loading={isLoading}
-          onClick={() => loadPage(pagination?.last || '')}
+          onClick={() => handleLoad(pagination?.last)}
         >
           Last
         </Button>
