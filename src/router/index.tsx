@@ -18,6 +18,7 @@ import { createBrowserRouter } from 'react-router';
 import { fetchAllPosts, fetchMyPosts, fetchSinglePost, rootLoader } from './loaders';
 import { Loader } from 'components/Loader';
 import { fetchAllUsers } from './loaders/fetchAllUsers';
+import { fetchAllQuestions } from './loaders/fetchAllQuestions';
 
 export const router = createBrowserRouter([
   {
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
           { path: UrlPath.MY_POSTS, Component: MyPostPage, loader: fetchMyPosts },
           { path: `${UrlPath.USERS}/:profileID`, Component: UserPage },
           { path: UrlPath.ACCOUNT, Component: AccountPage },
-          { path: UrlPath.QUESTIONS, Component: QuestionsPage },
+          { path: UrlPath.QUESTIONS, Component: QuestionsPage, loader: fetchAllQuestions },
           { path: UrlPath.NOT_FOUND, Component: ErrorPage },
         ],
       },

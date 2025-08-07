@@ -1,15 +1,18 @@
 import { useAppDispatch, useAppSelector, useToastErrorHandler } from '@hooks';
 import { Button, Typography } from '@mui/material';
+import { ResponseGetQuestionsZ } from '@schemas';
 import { getURLSearchParams } from '@utils';
 import { CreateQuestion } from 'components/CreateQuestion';
 import { PaginationBlock } from 'components/PaginationBlock';
 import { QuestionPost } from 'components/QuestionPost';
 import { useEffect, useState } from 'react';
+import { useLoaderData } from 'react-router';
 import { setQuestionsData } from 'store/questionsDataSlice';
 import { rootRequest } from 'utils/request/rootRequest';
 import z from 'zod';
 
 export const QuestionsPage = () => {
+  const loadedQuestions = useLoaderData<z.infer<typeof ResponseGetQuestionsZ>>();
   const questionsData = useAppSelector((state) => state.questionsData);
   const { data } = questionsData;
 
@@ -37,17 +40,7 @@ export const QuestionsPage = () => {
   };
 
   useEffect(() => {
-    if (!questionsData.meta?.currentPage)
-      rootRequest
-        .getQuestions()
-        .then((result) => dispatch(setQuestionsData(result)))
-        .catch((error) => {
-          if (error instanceof z.ZodError) {
-            console.log('Cannot parse data:', error.message);
-          } else {
-            throw Error('unexpected error, while get users');
-          }
-        });
+    if (loadedQuestions) dispatch(setQuestionsData(loadedQuestions));
   }, []);
 
   return (
